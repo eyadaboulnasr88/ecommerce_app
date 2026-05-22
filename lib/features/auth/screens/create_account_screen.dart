@@ -1,12 +1,11 @@
 import 'dart:math' as math;
 import 'dart:typed_data';
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
+import '../../../core/services/auth_service.dart';
 
 class CreateAccountScreen extends StatefulWidget {
   const CreateAccountScreen({super.key});
@@ -46,18 +45,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
 
   Future<void> _signInWithGoogle() async {
     try {
-      if (kIsWeb) {
-        await FirebaseAuth.instance.signInWithPopup(GoogleAuthProvider());
-      } else {
-        final googleUser = await GoogleSignIn().signIn();
-        if (googleUser == null) return;
-        final googleAuth = await googleUser.authentication;
-        final credential = GoogleAuthProvider.credential(
-          accessToken: googleAuth.accessToken,
-          idToken: googleAuth.idToken,
-        );
-        await FirebaseAuth.instance.signInWithCredential(credential);
-      }
+      await AuthService.signInWithGoogle();
       if (!mounted) return;
       Navigator.pushReplacementNamed(context, '/home');
     } on FirebaseAuthException catch (e) {
@@ -65,6 +53,8 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(e.message ?? 'Google sign-in failed')),
       );
+    } catch (_) {
+      // user cancelled picker — do nothing
     }
   }
 
@@ -257,8 +247,8 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                         if (value == null || value.isEmpty) {
                           return 'Password is required';
                         }
-                        if (value.length < 6) {
-                          return 'Password must be at least 6 characters';
+                        if (value.length < 8) {
+                          return 'Password must be at least 8 characters';
                         }
                         return null;
                       },
@@ -268,7 +258,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                     // ── Phone Field ───────────────────────────────────────
                     IntlPhoneField(
                       controller: _phoneController,
-                      initialCountryCode: 'GB',
+                      initialCountryCode: 'EG',
                       decoration: InputDecoration(
                         hintText: 'Your number',
                         hintStyle: GoogleFonts.poppins(color: Colors.grey),
