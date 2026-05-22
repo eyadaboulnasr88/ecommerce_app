@@ -1,6 +1,8 @@
 import 'dart:math' as math;
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 
 class CreateAccountScreen extends StatefulWidget {
   const CreateAccountScreen({super.key});
@@ -17,6 +19,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
 
   bool _isLoading = false;
   bool _obscurePassword = true;
+  Uint8List? _avatarBytes;
 
   static const _blue = Color(0xFF2B3CF3);
   static const _lightBlue = Color(0xFFE8EAFF);
@@ -27,6 +30,13 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
     _passwordController.dispose();
     _phoneController.dispose();
     super.dispose();
+  }
+
+  Future<void> _pickImage() async {
+    final picked = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (picked == null) return;
+    final bytes = await picked.readAsBytes();
+    setState(() => _avatarBytes = bytes); //reading as bytes to work on chrome and phone
   }
 
   Future<void> _createAccount() async {
@@ -106,21 +116,28 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                     // ── Avatar / Camera Picker ────────────────────────────
                     Center(
                       child: GestureDetector(
-                        onTap: () {
-                          // TODO: open image picker
-                        },
+                        onTap: _pickImage,
                         child: CustomPaint(
                           painter: _DashedCirclePainter(color: _blue),
-                          child: const SizedBox(
+                          child: SizedBox(
                             width: 90,
                             height: 90,
-                            child: Center(
-                              child: Icon(
-                                Icons.camera_alt_outlined,
-                                color: _blue,
-                                size: 32,
-                              ),
-                            ),
+                            child: _avatarBytes != null
+                                ? ClipOval(
+                                    child: Image.memory(
+                                      _avatarBytes!,
+                                      width: 90,
+                                      height: 90,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  )
+                                : const Center(
+                                    child: Icon(
+                                      Icons.camera_alt_outlined,
+                                      color: _blue,
+                                      size: 32,
+                                    ),
+                                  ),
                           ),
                         ),
                       ),
