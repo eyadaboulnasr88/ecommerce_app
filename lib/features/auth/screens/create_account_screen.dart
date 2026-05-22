@@ -1,8 +1,12 @@
 import 'dart:math' as math;
 import 'dart:typed_data';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:intl_phone_field/intl_phone_field.dart';
 
 class CreateAccountScreen extends StatefulWidget {
   const CreateAccountScreen({super.key});
@@ -12,7 +16,7 @@ class CreateAccountScreen extends StatefulWidget {
 }
 
 class _CreateAccountScreenState extends State<CreateAccountScreen> {
-  final _formKey = GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormState>(); //using to trigger validation later
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _phoneController = TextEditingController();
@@ -20,6 +24,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   bool _isLoading = false;
   bool _obscurePassword = true;
   Uint8List? _avatarBytes;
+  String _completePhone = '';
 
   static const _blue = Color(0xFF2B3CF3);
   static const _lightBlue = Color(0xFFE8EAFF);
@@ -39,21 +44,66 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
     setState(() => _avatarBytes = bytes); //reading as bytes to work on chrome and phone
   }
 
+  Future<void> _signInWithGoogle() async {
+    try {
+      if (kIsWeb) {
+        await FirebaseAuth.instance.signInWithPopup(GoogleAuthProvider());
+      } else {
+        final googleUser = await GoogleSignIn().signIn();
+        if (googleUser == null) return;
+        final googleAuth = await googleUser.authentication;
+        final credential = GoogleAuthProvider.credential(
+          accessToken: googleAuth.accessToken,
+          idToken: googleAuth.idToken,
+        );
+        await FirebaseAuth.instance.signInWithCredential(credential);
+      }
+      if (!mounted) return;
+      Navigator.pushReplacementNamed(context, '/home');
+    } on FirebaseAuthException catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.message ?? 'Google sign-in failed')),
+      );
+    }
+  }
+
   Future<void> _createAccount() async {
     if (!_formKey.currentState!.validate()) return;
+    final email = _emailController.text.trim();
+    final password = _passwordController.text;
+    final phone=_phoneController.text.trim();
 
     setState(() => _isLoading = true);
 
-    // TODO: call your auth provider/service here
-    // Example:
-    //   await context.read<AuthProvider>().createAccount(
-    //     email: _emailController.text.trim(),
-    //     password: _passwordController.text,
-    //     phone: _phoneController.text.trim(),
-    //   );
-    // Then navigate to home on success, or show a SnackBar on error.
-
-    setState(() => _isLoading = false);
+    try {
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: email,
+        password: password
+      );
+      if (!mounted) return; //if this widget was removed return early to avoid errors
+      Navigator.pushReplacementNamed(context, '/home'); //pushes home screen and destroys current,,context marks where we are in widget tree
+    } on FirebaseAuthException catch (e) {
+      String errorMessage = 'An error occurred. Please try again.';
+      if (e.code == 'weak-password') {
+        errorMessage = 'The password provided is too weak.';
+      } else if (e.code == 'email-already-in-use') {
+        errorMessage = 'An account already exists for that email.';
+      } else if (e.code == 'invalid-email') {
+        errorMessage = 'Please enter a valid email address.';
+      }
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(errorMessage)),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Unexpected error: $e')),
+      );
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
   }
 
   @override
@@ -216,9 +266,9 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                     const SizedBox(height: 14),
 
                     // ── Phone Field ───────────────────────────────────────
-                    TextFormField(
+                    IntlPhoneField(
                       controller: _phoneController,
-                      keyboardType: TextInputType.phone,
+                      initialCountryCode: 'GB',
                       decoration: InputDecoration(
                         hintText: 'Your number',
                         hintStyle: GoogleFonts.poppins(color: Colors.grey),
@@ -228,31 +278,30 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                           borderRadius: BorderRadius.circular(30),
                           borderSide: BorderSide.none,
                         ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30),
+                          borderSide: BorderSide.none,
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30),
+                          borderSide: BorderSide.none,
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30),
+                          borderSide: BorderSide.none,
+                        ),
+                        focusedErrorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30),
+                          borderSide: BorderSide.none,
+                        ),
                         contentPadding: const EdgeInsets.symmetric(
                           horizontal: 24,
                           vertical: 16,
                         ),
-                        prefixIcon: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const Text('🇬🇧', style: TextStyle(fontSize: 20)),
-                              const SizedBox(width: 4),
-                              const Icon(Icons.arrow_drop_down,
-                                  color: Colors.grey),
-                              const SizedBox(width: 8),
-                              Container(
-                                width: 1,
-                                height: 24,
-                                color: Colors.grey.shade300,
-                              ),
-                            ],
-                          ),
-                        ),
                       ),
-                      validator: (value) {
-                        if (value == null || value.trim().isEmpty) {
+                      onChanged: (phone) => _completePhone = phone.completeNumber,
+                      validator: (phone) {
+                        if (phone == null || phone.number.isEmpty) {
                           return 'Phone number is required';
                         }
                         return null;
@@ -288,6 +337,69 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+
+                    // ── OR Divider ────────────────────────────────────────
+                    Row(
+                      children: [
+                        const Expanded(child: Divider()),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          child: Text(
+                            'OR',
+                            style: GoogleFonts.poppins(
+                              fontSize: 12,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ),
+                        const Expanded(child: Divider()),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+
+                    // ── Google Button ─────────────────────────────────────
+                    SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton(
+                        onPressed: _signInWithGoogle,
+                        style: OutlinedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: const StadiumBorder(),
+                          side: BorderSide(color: Colors.grey.shade300),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            RichText(
+                              text: const TextSpan(
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                children: [
+                                  TextSpan(text: 'G', style: TextStyle(color: Color(0xFF4285F4))),
+                                  TextSpan(text: 'o', style: TextStyle(color: Color(0xFFEA4335))),
+                                  TextSpan(text: 'o', style: TextStyle(color: Color(0xFFFBBC05))),
+                                  TextSpan(text: 'g', style: TextStyle(color: Color(0xFF4285F4))),
+                                  TextSpan(text: 'l', style: TextStyle(color: Color(0xFF34A853))),
+                                  TextSpan(text: 'e', style: TextStyle(color: Color(0xFFEA4335))),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Text(
+                              'Continue with Google',
+                              style: GoogleFonts.poppins(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.black87,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                     const SizedBox(height: 12),
