@@ -8,6 +8,8 @@ import 'package:ecommerce_app/features/favorite/screens/favorite_screen.dart';
 import 'package:ecommerce_app/features/welcome/screens/welcome_screen.dart';
 import 'package:ecommerce_app/features/auth/screens/sign_in_screen.dart';
 import 'package:ecommerce_app/features/auth/screens/create_account_screen.dart';
+import 'package:ecommerce_app/features/search/ui/search_view.dart';
+import 'package:ecommerce_app/features/help_support_view.dart';
 
 class AppRoutes {
   static const String home = '/home';
@@ -32,8 +34,8 @@ class AppRoutes {
     favorite: (context) => const FavoriteScreen(),
     signIn: (context) => const SignInScreen(),
     createAccount: (context) => const CreateAccountScreen(),
-    search: (context) => const PlaceholderScreen(title: 'Search Screen'),
-    helpSupport: (context) => const PlaceholderScreen(title: 'Help & Support Screen'),
+    search: (context) => const SearchView(),
+    helpSupport: (context) => const HelpSupportView(),
   };
 }
 
