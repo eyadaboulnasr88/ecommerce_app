@@ -3,10 +3,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:ecommerce_app/core/routes/app_routes.dart';
 
-// Updated Color Palette - Using #1100FF as primary
 class ProfileColors {
-  static const Color primary = Color(0xFF1100FF);  // Main brand color
-  static const Color primaryLight = Color(0xFF4436FF);  // Lighter version
+  static const Color primary = Color(0xFF1100FF);
+  static const Color primaryLight = Color(0xFF4436FF);
   static const Color accentPink = Color(0xFFF43F5E);
   static const Color background = Colors.white;
   static const Color surface = Colors.white;
@@ -47,18 +46,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       backgroundColor: ProfileColors.background,
       appBar: AppBar(
-        title: Text(
-          'My Profile',
-          style: GoogleFonts.poppins(
-            fontWeight: FontWeight.w600,
-            fontSize: 18,
-            color: ProfileColors.textPrimary,
-          ),
-        ),
+        title: Text('My Profile', style: GoogleFonts.poppins(fontWeight: FontWeight.w600, fontSize: 18)),
         centerTitle: true,
         backgroundColor: Colors.white,
         elevation: 0,
-        foregroundColor: ProfileColors.textPrimary,
         actions: [
           IconButton(
             icon: Icon(Icons.edit_outlined, color: ProfileColors.primary),
@@ -116,10 +107,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('Cancel', style: TextStyle(color: ProfileColors.textLight)),
-          ),
+          TextButton(onPressed: () => Navigator.pop(context), child: Text('Cancel', style: TextStyle(color: ProfileColors.textLight))),
           ElevatedButton(
             onPressed: () {
               setState(() {
@@ -131,10 +119,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Navigator.pop(context);
               ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Profile updated successfully!')));
             },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: ProfileColors.primary,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-            ),
+            style: ElevatedButton.styleFrom(backgroundColor: ProfileColors.primary, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
             child: const Text('Save'),
           ),
         ],
@@ -147,7 +132,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       controller: controller,
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: GoogleFonts.poppins(color: ProfileColors.textSecondary),
         prefixIcon: Icon(icon, color: ProfileColors.primary),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: ProfileColors.border)),
         enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: ProfileColors.border)),
@@ -172,22 +156,14 @@ class ProfileHeader extends StatelessWidget {
             height: 80,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              gradient: const LinearGradient(
-                colors: [ProfileColors.primary, ProfileColors.primaryLight],
-              ),
+              gradient: const LinearGradient(colors: [ProfileColors.primary, ProfileColors.primaryLight]),
             ),
             child: const Center(child: Icon(Icons.person, size: 45, color: Colors.white)),
           ),
           const SizedBox(height: 12),
-          Text(
-            'Charlotte King',
-            style: GoogleFonts.poppins(fontSize: 20, fontWeight: FontWeight.bold, color: ProfileColors.textPrimary),
-          ),
+          Text('Charlotte King', style: GoogleFonts.poppins(fontSize: 20, fontWeight: FontWeight.bold, color: ProfileColors.textPrimary)),
           const SizedBox(height: 4),
-          Text(
-            '@johnkinggraphics',
-            style: GoogleFonts.poppins(fontSize: 14, color: ProfileColors.textSecondary),
-          ),
+          Text('@johnkinggraphics', style: GoogleFonts.poppins(fontSize: 14, color: ProfileColors.textSecondary)),
         ],
       ),
     );
@@ -251,15 +227,10 @@ class SettingsMenu extends StatelessWidget {
           children: [
             Container(width: 40, child: Icon(icon, color: ProfileColors.primary, size: 22)),
             const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(title, style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500, color: ProfileColors.textPrimary)),
-                  if (subtitle.isNotEmpty) Text(subtitle, style: GoogleFonts.poppins(fontSize: 13, color: ProfileColors.textSecondary)),
-                ],
-              ),
-            ),
+            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(title, style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500, color: ProfileColors.textPrimary)),
+              if (subtitle.isNotEmpty) Text(subtitle, style: GoogleFonts.poppins(fontSize: 13, color: ProfileColors.textSecondary)),
+            ])),
             Icon(Icons.chevron_right, color: ProfileColors.textLight, size: 22),
           ],
         ),
@@ -293,15 +264,10 @@ class SettingsMenu extends StatelessWidget {
           children: [
             Container(width: 40, child: Icon(Icons.lock_outline, color: ProfileColors.primary, size: 22)),
             const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Password', style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500, color: ProfileColors.textPrimary)),
-                  Text('********', style: GoogleFonts.poppins(fontSize: 13, color: ProfileColors.textSecondary)),
-                ],
-              ),
-            ),
+            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text('Password', style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500, color: ProfileColors.textPrimary)),
+              Text('********', style: GoogleFonts.poppins(fontSize: 13, color: ProfileColors.textSecondary)),
+            ])),
             Icon(Icons.chevron_right, color: ProfileColors.textLight, size: 22),
           ],
         ),
@@ -310,18 +276,12 @@ class SettingsMenu extends StatelessWidget {
   }
 
   void _editField(BuildContext context, String fieldName, String currentValue, Function(String) onSave) {
-    final TextEditingController controller = TextEditingController(text: currentValue == 'Not set' ? '' : currentValue);
+    final controller = TextEditingController(text: currentValue == 'Not set' ? '' : currentValue);
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: Text('Edit $fieldName', style: GoogleFonts.poppins(color: ProfileColors.primary)),
-        content: TextField(
-          controller: controller,
-          decoration: InputDecoration(
-            hintText: 'Enter $fieldName',
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-          ),
-        ),
+        content: TextField(controller: controller, decoration: InputDecoration(hintText: 'Enter $fieldName', border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)))),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         actions: [
           TextButton(onPressed: () => Navigator.pop(context), child: Text('Cancel', style: TextStyle(color: ProfileColors.textLight))),
@@ -340,8 +300,8 @@ class SettingsMenu extends StatelessWidget {
   }
 
   void _changePassword(BuildContext context) {
-    final TextEditingController newPass = TextEditingController();
-    final TextEditingController confirmPass = TextEditingController();
+    final newPass = TextEditingController();
+    final confirmPass = TextEditingController();
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -385,11 +345,7 @@ class LogoutButton extends StatelessWidget {
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 16),
         padding: const EdgeInsets.symmetric(vertical: 14),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: ProfileColors.border),
-        ),
+        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12), border: Border.all(color: ProfileColors.border)),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -442,18 +398,10 @@ class ProfileBottomNavBar extends StatelessWidget {
       currentIndex: 4,
       onTap: (index) {
         switch (index) {
-          case 0:
-            Navigator.pushReplacementNamed(context, AppRoutes.home);
-            break;
-          case 1:
-            Navigator.pushNamed(context, AppRoutes.search);
-            break;
-          case 2:
-            Navigator.pushNamed(context, AppRoutes.favorite);
-            break;
-          case 3:
-            Navigator.pushNamed(context, AppRoutes.cart);
-            break;
+          case 0: Navigator.pushReplacementNamed(context, AppRoutes.home); break;
+          case 1: Navigator.pushNamed(context, AppRoutes.search); break;
+          case 2: Navigator.pushNamed(context, AppRoutes.favorite); break;
+          case 3: Navigator.pushNamed(context, AppRoutes.cart); break;
         }
       },
       items: const [

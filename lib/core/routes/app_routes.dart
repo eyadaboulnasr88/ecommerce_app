@@ -4,6 +4,10 @@ import 'package:ecommerce_app/features/profile/screens/profile_screen.dart';
 import 'package:ecommerce_app/features/cart/screens/cart_screen.dart';
 import 'package:ecommerce_app/features/order/screens/confirmation_screen.dart';
 import 'package:ecommerce_app/features/checkout/screens/checkout_screen.dart';
+import 'package:ecommerce_app/features/favorite/screens/favorite_screen.dart';
+import 'package:ecommerce_app/features/welcome/screens/welcome_screen.dart';
+import 'package:ecommerce_app/features/auth/screens/sign_in_screen.dart';
+import 'package:ecommerce_app/features/auth/screens/create_account_screen.dart';
 
 class AppRoutes {
   static const String home = '/home';
@@ -16,22 +20,24 @@ class AppRoutes {
   static const String checkout = '/checkout';
   static const String confirmation = '/confirmation';
   static const String helpSupport = '/help-support';
+  static const String welcome = '/welcome';
 
   static Map<String, WidgetBuilder> routes = {
+    welcome: (context) => const WelcomeScreen(),
     home: (context) => const HomeScreen(),
     profile: (context) => const ProfileScreen(),
     cart: (context) => const CartScreen(),
     confirmation: (context) => const ConfirmationScreen(),
     checkout: (context) => const CheckoutScreen(),
-    signIn: (context) => const PlaceholderScreen(title: 'Sign In Screen'),
-    createAccount: (context) => const PlaceholderScreen(title: 'Create Account Screen'),
+    favorite: (context) => const FavoriteScreen(),
+    signIn: (context) => const SignInScreen(),
+    createAccount: (context) => const CreateAccountScreen(),
     search: (context) => const PlaceholderScreen(title: 'Search Screen'),
-    favorite: (context) => const PlaceholderScreen(title: 'Favorite Screen'),
     helpSupport: (context) => const PlaceholderScreen(title: 'Help & Support Screen'),
   };
 }
 
-// TEMPORARY PLACEHOLDER SCREEN - Remove this when real screens are built
+// Temporary Placeholder Screen for incomplete screens
 class PlaceholderScreen extends StatelessWidget {
   final String title;
   const PlaceholderScreen({super.key, required this.title});
