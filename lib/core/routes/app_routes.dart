@@ -3,6 +3,7 @@ import 'package:ecommerce_app/features/home/screens/home_screen.dart';
 import 'package:ecommerce_app/features/profile/screens/profile_screen.dart';
 import 'package:ecommerce_app/features/cart/screens/cart_screen.dart';
 import 'package:ecommerce_app/features/order/screens/confirmation_screen.dart';
+import 'package:ecommerce_app/features/checkout/screens/checkout_screen.dart';
 
 class AppRoutes {
   static const String home = '/home';
@@ -21,11 +22,11 @@ class AppRoutes {
     profile: (context) => const ProfileScreen(),
     cart: (context) => const CartScreen(),
     confirmation: (context) => const ConfirmationScreen(),
+    checkout: (context) => const CheckoutScreen(),
     signIn: (context) => const PlaceholderScreen(title: 'Sign In Screen'),
     createAccount: (context) => const PlaceholderScreen(title: 'Create Account Screen'),
     search: (context) => const PlaceholderScreen(title: 'Search Screen'),
     favorite: (context) => const PlaceholderScreen(title: 'Favorite Screen'),
-    checkout: (context) => const PlaceholderScreen(title: 'Checkout Screen'),
     helpSupport: (context) => const PlaceholderScreen(title: 'Help & Support Screen'),
   };
 }
