@@ -1,13 +1,72 @@
 import 'package:flutter/material.dart';
-import 'package:ecommerce_app/core/model/product_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class DetailsProductView extends StatelessWidget {
-  final ProductModel product;
+  final dynamic product;
 
   const DetailsProductView({
     super.key,
     required this.product,
   });
+
+  Future<void> addToCart(BuildContext context) async {
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please login first'),
+        ),
+      );
+      return;
+    }
+
+    await FirebaseFirestore.instance.collection('carts').add({
+      'userId': user.uid,
+      'productId': product.id,
+      'name': product.title,
+      'price': product.price,
+      'imageUrl': product.image,
+      'quantity': 1,
+      'createdAt': FieldValue.serverTimestamp(),
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Added to cart'),
+      ),
+    );
+  }
+
+  Future<void> addToFavorite(BuildContext context) async {
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please login first'),
+        ),
+      );
+      return;
+    }
+
+    await FirebaseFirestore.instance.collection('favorites').add({
+      'userId': user.uid,
+      'productId': product.id,
+      'title': product.title,
+      'price': product.price,
+      'image': product.image,
+      'description': product.description,
+      'createdAt': FieldValue.serverTimestamp(),
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Added to favorites'),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,106 +76,109 @@ class DetailsProductView extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
+
         iconTheme: const IconThemeData(
           color: Colors.black,
         ),
-        title: Text(
-          product.title,
-          style: const TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.w600,
+
+        actions: [
+          IconButton(
+            onPressed: () => addToFavorite(context),
+            icon: const Icon(
+              Icons.favorite_border,
+              color: Colors.red,
+            ),
           ),
-        ),
+        ],
       ),
 
       body: SingleChildScrollView(
         child: Column(
-          crossAxisAlignment:
-              CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
 
             /// PRODUCT IMAGE
-            Center(
-              child: Container(
-                margin: const EdgeInsets.all(20),
-                height: 250,
-                width: 250,
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade100,
-                  borderRadius:
-                      BorderRadius.circular(20),
-                ),
-                child: ClipRRect(
-                  borderRadius:
-                      BorderRadius.circular(20),
-                  child: Image.network(
-                    product.image,
-                    fit: BoxFit.contain,
-                  ),
+            Container(
+              width: double.infinity,
+              height: 320,
+              padding: const EdgeInsets.all(20),
+
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+
+                child: Image.network(
+                  product.image,
+                  fit: BoxFit.contain,
+
+                  errorBuilder: (_, __, ___) {
+                    return const Center(
+                      child: Icon(
+                        Icons.image,
+                        size: 80,
+                      ),
+                    );
+                  },
                 ),
               ),
             ),
 
-            /// PRODUCT INFO
+            /// DETAILS
             Padding(
-              padding:
-                  const EdgeInsets.symmetric(
-                horizontal: 20,
-              ),
+              padding: const EdgeInsets.all(20),
 
               child: Column(
-                crossAxisAlignment:
-                    CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
 
                   /// TITLE
                   Text(
                     product.title,
+
                     style: const TextStyle(
                       fontSize: 24,
-                      fontWeight:
-                          FontWeight.bold,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+
+                  const SizedBox(height: 15),
+
+                  /// PRICE
+                  Text(
+                    '\$${product.price}',
+
+                    style: const TextStyle(
+                      fontSize: 24,
+                      color: Color(0xFF1100FF),
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+
+                  const SizedBox(height: 25),
+
+                  /// DESCRIPTION TITLE
+                  const Text(
+                    'Description',
+
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
 
                   const SizedBox(height: 12),
 
-                  /// PRICE
-                  Text(
-                    '\$${product.price}',
-                    style: const TextStyle(
-                      fontSize: 22,
-                      color: Colors.blue,
-                      fontWeight:
-                          FontWeight.bold,
-                    ),
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  /// DESCRIPTION TITLE
-                  const Text(
-                    'Description',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight:
-                          FontWeight.w600,
-                    ),
-                  ),
-
-                  const SizedBox(height: 10),
-
                   /// DESCRIPTION
                   Text(
                     product.description,
-                    style: TextStyle(
+
+                    style: const TextStyle(
                       fontSize: 16,
-                      color: Colors.grey.shade700,
-                      height: 1.5,
+                      color: Colors.black54,
+                      height: 1.6,
                     ),
                   ),
 
-                  const SizedBox(height: 30),
+                  const SizedBox(height: 40),
 
                   /// ADD TO CART BUTTON
                   SizedBox(
@@ -124,37 +186,27 @@ class DetailsProductView extends StatelessWidget {
                     height: 55,
 
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () => addToCart(context),
 
-                      style:
-                          ElevatedButton.styleFrom(
-                        backgroundColor:
-                            const Color(
-                          0xFF1100FF,
-                        ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF1100FF),
 
-                        shape:
-                            RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.circular(
-                            14,
-                          ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
                         ),
                       ),
 
                       child: const Text(
                         'Add To Cart',
+
                         style: TextStyle(
-                          fontSize: 18,
                           color: Colors.white,
-                          fontWeight:
-                              FontWeight.w600,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
                   ),
-
-                  const SizedBox(height: 30),
                 ],
               ),
             ),

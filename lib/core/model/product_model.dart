@@ -1,16 +1,16 @@
 class ProductModel {
   final String id;
   final String title;
-  final dynamic price;
-  final String image;
   final String description;
+  final String image;
+  final dynamic price;
 
   ProductModel({
     required this.id,
     required this.title,
-    required this.price,
-    required this.image,
     required this.description,
+    required this.image,
+    required this.price,
   });
 
   factory ProductModel.fromJson(
@@ -19,19 +19,10 @@ class ProductModel {
   ) {
     return ProductModel(
       id: id,
-      title: json['title']?.toString() ?? '',
-      price: json['price'],
-      image: json['image']?.toString() ?? '',
-      description: json['description']?.toString() ?? '',
+      title: json['title'] ?? '',
+      description: json['description'] ?? '',
+      image: json['image'] ?? '',
+      price: json['price'] ?? '',
     );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'title': title,
-      'price': price,
-      'image': image,
-      'description': description,
-    };
   }
 }
