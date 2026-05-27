@@ -1,3 +1,5 @@
+import 'package:ecommerce_app/core/model/product_model.dart';
+
 abstract class SearchState {}
 
 class SearchInitial extends SearchState {}
@@ -5,7 +7,7 @@ class SearchInitial extends SearchState {}
 class SearchLoading extends SearchState {}
 
 class SearchLoaded extends SearchState {
-  final List<Map<String, dynamic>> results;
+  final List<ProductModel> results;
 
   SearchLoaded(this.results);
 }
