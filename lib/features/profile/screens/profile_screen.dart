@@ -706,21 +706,22 @@ class LogoutButton extends StatelessWidget {
   }
 
   void _showLogoutDialog(BuildContext context) {
+    final messenger = ScaffoldMessenger.of(context);
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (dialogContext) => AlertDialog(
         title: const Text('Logout'),
         content: const Text('Are you sure you want to logout?'),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.pop(dialogContext),
             child: Text('Cancel', style: TextStyle(color: ProfileColors.textLight)),
           ),
           TextButton(
             onPressed: () async {
-              Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
+              Navigator.pop(dialogContext);
+              messenger.showSnackBar(
                 const SnackBar(content: Text('Logging out...')),
               );
               try {
@@ -732,8 +733,7 @@ class LogoutButton extends StatelessWidget {
                   (route) => false,
                 );
               } catch (e) {
-                if (!context.mounted) return;
-                ScaffoldMessenger.of(context).showSnackBar(
+                messenger.showSnackBar(
                   SnackBar(content: Text('Error: $e')),
                 );
               }

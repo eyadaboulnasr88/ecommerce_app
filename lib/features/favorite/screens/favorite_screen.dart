@@ -32,6 +32,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
 
   Future<void> _removeFromFavorites(String favoriteId) async {
     await _firestore.collection('favorites').doc(favoriteId).delete();
+    if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Removed from favorites')),
     );
@@ -72,6 +73,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
       });
     }
 
+    if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('${product['name']} added to cart')),
     );
