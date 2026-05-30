@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl_phone_field/countries.dart' as phone_countries;
 import 'package:ecommerce_app/core/routes/app_routes.dart';
 import 'package:ecommerce_app/core/constants/app_colors.dart';
 import 'package:ecommerce_app/core/widgets/app_bottom_nav_bar.dart';
@@ -369,6 +370,17 @@ class SettingsMenu extends StatelessWidget {
               'country': value,
               'subscription': userSubscription,
             }),
+            customOnTap: () => _pickCountry(
+              context,
+              (value) => onDataUpdated({
+                'name': userName,
+                'email': userEmail,
+                'username': userUsername,
+                'phone': userPhone,
+                'country': value,
+                'subscription': userSubscription,
+              }),
+            ),
           ),
           const Divider(height: 1, indent: 56, color: AppColors.border),
           _buildMenuItem(
@@ -438,10 +450,11 @@ class SettingsMenu extends StatelessWidget {
     IconData icon,
     String title,
     String subtitle,
-    Function(String) onSave,
-  ) {
+    Function(String) onSave, {
+    VoidCallback? customOnTap,
+  }) {
     return GestureDetector(
-      onTap: () => _editField(context, title, subtitle, onSave),
+      onTap: customOnTap ?? () => _editField(context, title, subtitle, onSave),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         child: Row(
@@ -551,6 +564,49 @@ class SettingsMenu extends StatelessWidget {
             ),
             Icon(Icons.chevron_right, color: AppColors.textLight, size: 22),
           ],
+        ),
+      ),
+    );
+  }
+
+  void _pickCountry(BuildContext context, Function(String) onSave) {
+    final search = TextEditingController();
+    var filtered = [...phone_countries.countries];
+    showDialog(
+      context: context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setInner) => AlertDialog(
+          title: TextField(
+            controller: search,
+            decoration: const InputDecoration(
+              hintText: 'Search country...',
+              prefixIcon: Icon(Icons.search),
+              border: InputBorder.none,
+            ),
+            onChanged: (v) => setInner(() {
+              filtered = phone_countries.countries
+                  .where((c) => c.name.toLowerCase().contains(v.toLowerCase()))
+                  .toList();
+            }),
+          ),
+          content: SizedBox(
+            width: double.maxFinite,
+            height: 300,
+            child: ListView.builder(
+              itemCount: filtered.length,
+              itemBuilder: (_, i) => ListTile(
+                leading: Text(filtered[i].flag, style: const TextStyle(fontSize: 22)),
+                title: Text(filtered[i].name, style: GoogleFonts.poppins(fontSize: 14)),
+                onTap: () {
+                  onSave(filtered[i].name);
+                  Navigator.pop(ctx);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Country updated!')),
+                  );
+                },
+              ),
+            ),
+          ),
         ),
       ),
     );
