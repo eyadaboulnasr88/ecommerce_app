@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import '../../../core/services/auth_service.dart';
 import 'package:ecommerce_app/core/routes/app_routes.dart';
@@ -63,17 +64,31 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
     if (!_formKey.currentState!.validate()) return;
     final email = _emailController.text.trim();
     final password = _passwordController.text;
-    final phone=_phoneController.text.trim();
+    final phone = _phoneController.text.trim();
 
     setState(() => _isLoading = true);
 
     try {
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: email,
-        password: password
+        password: password,
       );
-      if (!mounted) return; //if this widget was removed return early to avoid errors
-      Navigator.pushReplacementNamed(context, '/home'); //pushes home screen and destroys current,,context marks where we are in widget tree
+
+      final user = credential.user!;
+      final displayName = email.split('@').first;
+      await user.updateDisplayName(displayName);
+      await user.reload(); // force local Auth cache to reflect the new displayName
+
+      // Save user profile so checkout can auto-fill name and phone
+      await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
+        'name': displayName,
+        'email': email,
+        'phone': _completePhone.isNotEmpty ? _completePhone : phone,
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+
+      if (!mounted) return;
+      Navigator.pushReplacementNamed(context, '/home');
     } on FirebaseAuthException catch (e) {
       String errorMessage = 'An error occurred. Please try again.';
       if (e.code == 'weak-password') {
