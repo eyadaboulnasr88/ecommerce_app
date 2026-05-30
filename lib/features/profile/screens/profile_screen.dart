@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce_app/core/routes/app_routes.dart';
 
 class ProfileColors {
@@ -23,12 +24,67 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  String userName = "Charlotte King";
-  String userEmail = "@johnkinggraphics.gmail.com";
-  String userUsername = "@johnkinggraphics";
-  String userPhone = "+916895312";
-  String userLocation = "";
-  String userSubscription = "";
+  String userName = '';
+  String userEmail = '';
+  String userUsername = '';
+  String userPhone = '';
+  String userLocation = '';
+  String userSubscription = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+    if (!mounted) return;
+    setState(() {
+      userName = user.displayName ?? '';
+      userEmail = user.email ?? '';
+    });
+    try {
+      final doc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
+      if (!mounted) return;
+      if (doc.exists) {
+        final data = doc.data()!;
+        setState(() {
+          if (userName.isEmpty) userName = data['name'] ?? '';
+          userUsername = data['username'] ?? '';
+          userPhone = data['phone'] ?? '';
+          userLocation = data['location'] ?? '';
+          userSubscription = data['subscription'] ?? '';
+        });
+      }
+    } catch (_) {}
+  }
+
+  Future<void> _saveToFirebase() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+    try {
+      if (user.displayName != userName) {
+        await user.updateDisplayName(userName);
+      }
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .set({
+        'name': userName,
+        'email': userEmail,
+        'username': userUsername,
+        'phone': userPhone,
+        'location': userLocation,
+        'subscription': userSubscription,
+        'updatedAt': FieldValue.serverTimestamp(),
+      }, SetOptions(merge: true));
+    } catch (_) {}
+  }
 
   void _updateUserData(Map<String, dynamic> data) {
     setState(() {
@@ -39,6 +95,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       if (data.containsKey('location')) userLocation = data['location'];
       if (data.containsKey('subscription')) userSubscription = data['subscription'];
     });
+    _saveToFirebase();
   }
 
   @override
@@ -67,7 +124,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            const ProfileHeader(),
+            ProfileHeader(name: userName, username: userUsername),
             const SizedBox(height: 16),
             SettingsMenu(
               userName: userName,
@@ -90,7 +147,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   void _showEditProfileDialog() {
     final TextEditingController nameController = TextEditingController(text: userName);
-    final TextEditingController emailController = TextEditingController(text: userEmail.replaceAll('@', '').replaceAll('.gmail.com', ''));
+    final TextEditingController emailController = TextEditingController(text: userEmail);
     final TextEditingController usernameController = TextEditingController(text: userUsername.replaceAll('@', ''));
     final TextEditingController phoneController = TextEditingController(text: userPhone);
 
@@ -129,10 +186,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
             onPressed: () {
               setState(() {
                 userName = nameController.text;
-                userEmail = '${emailController.text}@gmail.com';
-                userUsername = '@${usernameController.text}';
+                userEmail = emailController.text;
+                userUsername = usernameController.text.startsWith('@')
+                    ? usernameController.text
+                    : '@${usernameController.text}';
                 userPhone = phoneController.text;
               });
+              _saveToFirebase();
               Navigator.pop(context);
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text('Profile updated successfully!')),
@@ -178,7 +238,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
 }
 
 class ProfileHeader extends StatelessWidget {
-  const ProfileHeader({super.key});
+  final String name;
+  final String username;
+
+  const ProfileHeader({super.key, required this.name, required this.username});
 
   @override
   Widget build(BuildContext context) {
@@ -202,7 +265,7 @@ class ProfileHeader extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           Text(
-            'Charlotte King',
+            name.isEmpty ? 'User' : name,
             style: GoogleFonts.poppins(
               fontSize: 20,
               fontWeight: FontWeight.bold,
@@ -210,13 +273,14 @@ class ProfileHeader extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 4),
-          Text(
-            '@johnkinggraphics',
-            style: GoogleFonts.poppins(
-              fontSize: 14,
-              color: ProfileColors.textSecondary,
+          if (username.isNotEmpty)
+            Text(
+              username,
+              style: GoogleFonts.poppins(
+                fontSize: 14,
+                color: ProfileColors.textSecondary,
+              ),
             ),
-          ),
         ],
       ),
     );
@@ -650,12 +714,14 @@ class LogoutButton extends StatelessWidget {
               );
               try {
                 await FirebaseAuth.instance.signOut();
+                if (!context.mounted) return;
                 Navigator.pushNamedAndRemoveUntil(
                   context,
                   AppRoutes.signIn,
                   (route) => false,
                 );
               } catch (e) {
+                if (!context.mounted) return;
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text('Error: $e')),
                 );
