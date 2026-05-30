@@ -147,17 +147,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ],
                   ),
-                  Row(
-                    children: [
-                      IconButton(
-                        icon: Icon(Icons.notifications_outlined, color: AppColors.primary),
-                        onPressed: () {},
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.shopping_cart_outlined, color: AppColors.primary),
-                        onPressed: () => Navigator.pushNamed(context, AppRoutes.cart),
-                      ),
-                    ],
+                  IconButton(
+                    icon: Icon(Icons.shopping_cart_outlined, color: AppColors.primary),
+                    onPressed: () => Navigator.pushNamed(context, AppRoutes.cart),
                   ),
                 ],
               ),
