@@ -3,16 +3,14 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'firebase_options.dart';
 import 'package:ecommerce_app/core/routes/app_routes.dart';
-
-const Color primaryColor = Color(0xFF1100FF);
-const Color backgroundColor = Color(0xFFF8F9FA);
+import 'package:ecommerce_app/core/constants/app_colors.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-runApp(const MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -25,10 +23,10 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         useMaterial3: true,
-        scaffoldBackgroundColor: backgroundColor,
+        scaffoldBackgroundColor: AppColors.background,
         colorScheme: ColorScheme.fromSeed(
-          seedColor: primaryColor,
-          primary: primaryColor,
+          seedColor: AppColors.primary,
+          primary: AppColors.primary,
         ),
         textTheme: GoogleFonts.poppinsTextTheme(),
       ),
