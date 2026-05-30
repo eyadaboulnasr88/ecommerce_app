@@ -948,8 +948,8 @@ class _ChangePasswordDialogState extends State<_ChangePasswordDialog> {
               );
               return;
             }
-            Navigator.pop(context);
             final messenger = ScaffoldMessenger.of(context);
+            Navigator.pop(context);
             try {
               await FirebaseAuth.instance.currentUser?.updatePassword(_newPass.text);
               messenger.showSnackBar(
