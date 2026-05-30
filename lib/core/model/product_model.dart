@@ -3,7 +3,7 @@ class ProductModel {
   final String title;
   final String description;
   final String image;
-  final dynamic price;
+  final double price;
 
   ProductModel({
     required this.id,
@@ -22,7 +22,7 @@ class ProductModel {
       title: json['title'] ?? '',
       description: json['description'] ?? '',
       image: json['image'] ?? '',
-      price: json['price'] ?? '',
+      price: (json['price'] as num?)?.toDouble() ?? 0.0,
     );
   }
 }

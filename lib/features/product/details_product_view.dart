@@ -144,7 +144,7 @@ class DetailsProductView extends StatelessWidget {
 
                   /// PRICE
                   Text(
-                    '\$${product.price}',
+                    '\$${product.price.toStringAsFixed(2)}',
 
                     style: const TextStyle(
                       fontSize: 24,
