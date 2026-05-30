@@ -66,8 +66,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         _addressController.text = data?['address'] ?? '';
         _cityController.text = data?['city'] ?? '';
       }
-    } catch (e) {
-      print('Error loading user data: $e');
+    } catch (_) {
     } finally {
       setState(() {
         _isLoading = false;

@@ -31,7 +31,10 @@ class AppRoutes {
     home: (context) => const HomeScreen(),
     profile: (context) => const ProfileScreen(),
     cart: (context) => const CartScreen(),
-    confirmation: (context) => const ConfirmationScreen(),
+    confirmation: (context) {
+      final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+      return ConfirmationScreen(orderId: args?['orderId'] as String?);
+    },
     checkout: (context) => const CheckoutScreen(),
     favorite: (context) => const FavoriteScreen(),
     signIn: (context) => const SignInScreen(),

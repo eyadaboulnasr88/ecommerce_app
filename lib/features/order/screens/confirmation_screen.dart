@@ -36,39 +36,45 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
   }
 
   Future<void> _loadOrderDetails() async {
-    if (widget.orderId != null) {
-      final doc = await _firestore.collection('orders').doc(widget.orderId).get();
-      if (doc.exists) {
-        setState(() {
-          orderData = doc.data();
-          isLoading = false;
-        });
-        return;
+    try {
+      if (widget.orderId != null) {
+        final doc = await _firestore.collection('orders').doc(widget.orderId).get();
+        if (doc.exists) {
+          if (mounted) {
+            setState(() {
+              orderData = doc.data();
+              isLoading = false;
+            });
+          }
+          return;
+        }
       }
-    }
 
-    // If no orderId provided, get the most recent order for this user
-    final userId = _auth.currentUser?.uid;
-    if (userId != null) {
-      final query = await _firestore
-          .collection('orders')
-          .where('userId', isEqualTo: userId)
-          .orderBy('createdAt', descending: true)
-          .limit(1)
-          .get();
+      // Fallback: get the most recent order for this user
+      final userId = _auth.currentUser?.uid;
+      if (userId != null) {
+        final query = await _firestore
+            .collection('orders')
+            .where('userId', isEqualTo: userId)
+            .orderBy('createdAt', descending: true)
+            .limit(1)
+            .get();
 
-      if (query.docs.isNotEmpty) {
-        setState(() {
-          orderData = query.docs.first.data();
-          isLoading = false;
-        });
-        return;
+        if (query.docs.isNotEmpty && mounted) {
+          setState(() {
+            orderData = query.docs.first.data();
+            isLoading = false;
+          });
+          return;
+        }
       }
-    }
+    } catch (_) {}
 
-    setState(() {
-      isLoading = false;
-    });
+    if (mounted) {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   @override
@@ -315,9 +321,13 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
 
   String _formatDate(dynamic timestamp) {
     if (timestamp == null) return 'Just now';
-    if (timestamp is DateTime) {
-      return '${timestamp.day}/${timestamp.month}/${timestamp.year}';
+    DateTime? dt;
+    if (timestamp is Timestamp) {
+      dt = timestamp.toDate();
+    } else if (timestamp is DateTime) {
+      dt = timestamp;
     }
-    return 'Just now';
+    if (dt == null) return 'Just now';
+    return '${dt.day}/${dt.month}/${dt.year}';
   }
 }
