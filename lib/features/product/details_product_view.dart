@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:ecommerce_app/services/cart_service.dart';
+import 'package:ecommerce_app/core/constants/app_colors.dart';
 
 class DetailsProductView extends StatelessWidget {
   final dynamic product;
@@ -12,60 +14,77 @@ class DetailsProductView extends StatelessWidget {
 
   Future<void> addToCart(BuildContext context) async {
     final user = FirebaseAuth.instance.currentUser;
-
     if (user == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please login first'),
-        ),
+        const SnackBar(content: Text('Please login first')),
       );
       return;
     }
 
-    await FirebaseFirestore.instance.collection('carts').add({
-      'userId': user.uid,
-      'productId': product.id,
-      'name': product.title,
-      'price': product.price,
-      'imageUrl': product.image,
-      'quantity': 1,
-      'createdAt': FieldValue.serverTimestamp(),
-    });
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Added to cart'),
-      ),
-    );
+    try {
+      await CartService().addToCart(
+        productId: product.id,
+        name: product.title,
+        price: product.price,
+        imageUrl: product.image,
+      );
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Added to cart')),
+      );
+    } catch (e) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to add to cart: $e')),
+      );
+    }
   }
 
   Future<void> addToFavorite(BuildContext context) async {
     final user = FirebaseAuth.instance.currentUser;
-
     if (user == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please login first'),
-        ),
+        const SnackBar(content: Text('Please login first')),
       );
       return;
     }
 
-    await FirebaseFirestore.instance.collection('favorites').add({
-      'userId': user.uid,
-      'productId': product.id,
-      'name': product.title,
-      'price': product.price,
-      'imageUrl': product.image,
-      'description': product.description,
-      'createdAt': FieldValue.serverTimestamp(),
-    });
+    try {
+      final favRef = FirebaseFirestore.instance.collection('favorites');
+      final existing = await favRef
+          .where('userId', isEqualTo: user.uid)
+          .where('productId', isEqualTo: product.id)
+          .get();
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Added to favorites'),
-      ),
-    );
+      if (!context.mounted) return;
+
+      if (existing.docs.isNotEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Already in favorites')),
+        );
+        return;
+      }
+
+      await favRef.add({
+        'userId': user.uid,
+        'productId': product.id,
+        'name': product.title,
+        'price': product.price,
+        'imageUrl': product.image,
+        'description': product.description,
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Added to favorites')),
+      );
+    } catch (e) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to add to favorites: $e')),
+      );
+    }
   }
 
   @override
@@ -189,7 +208,7 @@ class DetailsProductView extends StatelessWidget {
                       onPressed: () => addToCart(context),
 
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF1100FF),
+                        backgroundColor: AppColors.primary,
 
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(14),
