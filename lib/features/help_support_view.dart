@@ -83,7 +83,7 @@ class HelpSupportView extends StatelessWidget {
       color: Colors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       elevation: 1,
-      shadowColor: Colors.black.withOpacity(0.05),
+      shadowColor: Colors.black.withValues(alpha: 0.05),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(

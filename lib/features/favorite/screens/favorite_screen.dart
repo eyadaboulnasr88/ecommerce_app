@@ -203,7 +203,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
         border: Border.all(color: AppColors.border),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.03),
+            color: Colors.black.withValues(alpha: 0.03),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -272,7 +272,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
+                          color: Colors.black.withValues(alpha: 0.1),
                           blurRadius: 4,
                         ),
                       ],
