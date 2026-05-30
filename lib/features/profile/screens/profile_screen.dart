@@ -46,10 +46,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       backgroundColor: ProfileColors.background,
       appBar: AppBar(
-        title: Text('My Profile', style: GoogleFonts.poppins(fontWeight: FontWeight.w600, fontSize: 18)),
+        title: Text(
+          'My Profile',
+          style: GoogleFonts.poppins(
+            fontWeight: FontWeight.w600,
+            fontSize: 18,
+          ),
+        ),
         centerTitle: true,
         backgroundColor: Colors.white,
         elevation: 0,
+        foregroundColor: ProfileColors.textPrimary,
         actions: [
           IconButton(
             icon: Icon(Icons.edit_outlined, color: ProfileColors.primary),
@@ -90,7 +97,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Edit Profile', style: GoogleFonts.poppins(fontWeight: FontWeight.bold, fontSize: 20, color: ProfileColors.primary)),
+        title: Text(
+          'Edit Profile',
+          style: GoogleFonts.poppins(
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
+            color: ProfileColors.primary,
+          ),
+        ),
         content: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -107,7 +121,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: Text('Cancel', style: TextStyle(color: ProfileColors.textLight))),
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Cancel', style: TextStyle(color: ProfileColors.textLight)),
+          ),
           ElevatedButton(
             onPressed: () {
               setState(() {
@@ -117,9 +134,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 userPhone = phoneController.text;
               });
               Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Profile updated successfully!')));
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Profile updated successfully!')),
+              );
             },
-            style: ElevatedButton.styleFrom(backgroundColor: ProfileColors.primary, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: ProfileColors.primary,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            ),
             child: const Text('Save'),
           ),
         ],
@@ -127,15 +149,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildTextField({required TextEditingController controller, required String label, required IconData icon}) {
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String label,
+    required IconData icon,
+  }) {
     return TextField(
       controller: controller,
       decoration: InputDecoration(
         labelText: label,
+        labelStyle: GoogleFonts.poppins(color: ProfileColors.textSecondary),
         prefixIcon: Icon(icon, color: ProfileColors.primary),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: ProfileColors.border)),
-        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: ProfileColors.border)),
-        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: ProfileColors.primary, width: 2)),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: ProfileColors.border),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: ProfileColors.border),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: ProfileColors.primary, width: 2),
+        ),
       ),
     );
   }
@@ -156,14 +192,31 @@ class ProfileHeader extends StatelessWidget {
             height: 80,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              gradient: const LinearGradient(colors: [ProfileColors.primary, ProfileColors.primaryLight]),
+              gradient: const LinearGradient(
+                colors: [ProfileColors.primary, ProfileColors.primaryLight],
+              ),
             ),
-            child: const Center(child: Icon(Icons.person, size: 45, color: Colors.white)),
+            child: const Center(
+              child: Icon(Icons.person, size: 45, color: Colors.white),
+            ),
           ),
           const SizedBox(height: 12),
-          Text('Charlotte King', style: GoogleFonts.poppins(fontSize: 20, fontWeight: FontWeight.bold, color: ProfileColors.textPrimary)),
+          Text(
+            'Charlotte King',
+            style: GoogleFonts.poppins(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: ProfileColors.textPrimary,
+            ),
+          ),
           const SizedBox(height: 4),
-          Text('@johnkinggraphics', style: GoogleFonts.poppins(fontSize: 14, color: ProfileColors.textSecondary)),
+          Text(
+            '@johnkinggraphics',
+            style: GoogleFonts.poppins(
+              fontSize: 14,
+              color: ProfileColors.textSecondary,
+            ),
+          ),
         ],
       ),
     );
@@ -196,41 +249,169 @@ class SettingsMenu extends StatelessWidget {
       color: Colors.white,
       child: Column(
         children: [
-          _buildMenuItem(context, Icons.person_outline, 'Name', userName, (value) => onDataUpdated({'name': value, 'email': userEmail, 'username': userUsername, 'phone': userPhone, 'location': userLocation, 'subscription': userSubscription})),
+          _buildMenuItem(
+            context,
+            Icons.person_outline,
+            'Name',
+            userName,
+            (value) => onDataUpdated({
+              'name': value,
+              'email': userEmail,
+              'username': userUsername,
+              'phone': userPhone,
+              'location': userLocation,
+              'subscription': userSubscription,
+            }),
+          ),
           const Divider(height: 1, indent: 56, color: ProfileColors.border),
-          _buildMenuItem(context, Icons.email_outlined, 'Email address', userEmail, (value) => onDataUpdated({'name': userName, 'email': value, 'username': userUsername, 'phone': userPhone, 'location': userLocation, 'subscription': userSubscription})),
+          _buildMenuItem(
+            context,
+            Icons.email_outlined,
+            'Email address',
+            userEmail,
+            (value) => onDataUpdated({
+              'name': userName,
+              'email': value,
+              'username': userUsername,
+              'phone': userPhone,
+              'location': userLocation,
+              'subscription': userSubscription,
+            }),
+          ),
           const Divider(height: 1, indent: 56, color: ProfileColors.border),
-          _buildMenuItem(context, Icons.person_outline, 'Username', userUsername, (value) => onDataUpdated({'name': userName, 'email': userEmail, 'username': value, 'phone': userPhone, 'location': userLocation, 'subscription': userSubscription})),
+          _buildMenuItem(
+            context,
+            Icons.person_outline,
+            'Username',
+            userUsername,
+            (value) => onDataUpdated({
+              'name': userName,
+              'email': userEmail,
+              'username': value,
+              'phone': userPhone,
+              'location': userLocation,
+              'subscription': userSubscription,
+            }),
+          ),
           const Divider(height: 1, indent: 56, color: ProfileColors.border),
-          _buildMenuItem(context, Icons.location_on_outlined, 'Location', userLocation.isEmpty ? 'Not set' : userLocation, (value) => onDataUpdated({'name': userName, 'email': userEmail, 'username': userUsername, 'phone': userPhone, 'location': value, 'subscription': userSubscription})),
+          _buildMenuItem(
+            context,
+            Icons.location_on_outlined,
+            'Location',
+            userLocation.isEmpty ? 'Not set' : userLocation,
+            (value) => onDataUpdated({
+              'name': userName,
+              'email': userEmail,
+              'username': userUsername,
+              'phone': userPhone,
+              'location': value,
+              'subscription': userSubscription,
+            }),
+          ),
           const Divider(height: 1, indent: 56, color: ProfileColors.border),
-          _buildMenuItem(context, Icons.credit_card_outlined, 'Subscription', userSubscription.isEmpty ? 'Not subscribed' : userSubscription, (value) => onDataUpdated({'name': userName, 'email': userEmail, 'username': userUsername, 'phone': userPhone, 'location': userLocation, 'subscription': value})),
+          _buildMenuItem(
+            context,
+            Icons.credit_card_outlined,
+            'Subscription',
+            userSubscription.isEmpty ? 'Not subscribed' : userSubscription,
+            (value) => onDataUpdated({
+              'name': userName,
+              'email': userEmail,
+              'username': userUsername,
+              'phone': userPhone,
+              'location': userLocation,
+              'subscription': value,
+            }),
+          ),
           const Divider(height: 1, indent: 56, color: ProfileColors.border),
           _buildPasswordItem(context),
           const Divider(height: 1, indent: 56, color: ProfileColors.border),
-          _buildMenuItem(context, Icons.phone_outlined, 'Phone number', userPhone, (value) => onDataUpdated({'name': userName, 'email': userEmail, 'username': userUsername, 'phone': value, 'location': userLocation, 'subscription': userSubscription})),
+          _buildMenuItem(
+            context,
+            Icons.phone_outlined,
+            'Phone number',
+            userPhone,
+            (value) => onDataUpdated({
+              'name': userName,
+              'email': userEmail,
+              'username': userUsername,
+              'phone': value,
+              'location': userLocation,
+              'subscription': userSubscription,
+            }),
+          ),
           const Divider(height: 1, indent: 56, color: ProfileColors.border),
-          _buildSimpleMenuItem(context, Icons.delete_outline, 'Clear cache', () => ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Cache cleared!')))),
+          _buildSimpleMenuItem(
+            context,
+            Icons.delete_outline,
+            'Clear cache',
+            () => ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Cache cleared!')),
+            ),
+          ),
           const Divider(height: 1, indent: 56, color: ProfileColors.border),
-          _buildSimpleMenuItem(context, Icons.history_outlined, 'Clear history', () => ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('History cleared!')))),
+          _buildSimpleMenuItem(
+            context,
+            Icons.history_outlined,
+            'Clear history',
+            () => ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('History cleared!')),
+            ),
+          ),
+          // ==================== HELP & SUPPORT ====================
+          const Divider(height: 1, indent: 56, color: ProfileColors.border),
+          _buildSimpleMenuItem(
+            context,
+            Icons.help_outline,
+            'Help & Support',
+            () => Navigator.pushNamed(context, AppRoutes.helpSupport),
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildMenuItem(BuildContext context, IconData icon, String title, String subtitle, Function(String) onSave) {
+  Widget _buildMenuItem(
+    BuildContext context,
+    IconData icon,
+    String title,
+    String subtitle,
+    Function(String) onSave,
+  ) {
     return GestureDetector(
       onTap: () => _editField(context, title, subtitle, onSave),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         child: Row(
           children: [
-            Container(width: 40, child: Icon(icon, color: ProfileColors.primary, size: 22)),
+            Container(
+              width: 40,
+              child: Icon(icon, color: ProfileColors.primary, size: 22),
+            ),
             const SizedBox(width: 12),
-            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(title, style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500, color: ProfileColors.textPrimary)),
-              if (subtitle.isNotEmpty) Text(subtitle, style: GoogleFonts.poppins(fontSize: 13, color: ProfileColors.textSecondary)),
-            ])),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: GoogleFonts.poppins(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color: ProfileColors.textPrimary,
+                    ),
+                  ),
+                  if (subtitle.isNotEmpty)
+                    Text(
+                      subtitle,
+                      style: GoogleFonts.poppins(
+                        fontSize: 13,
+                        color: ProfileColors.textSecondary,
+                      ),
+                    ),
+                ],
+              ),
+            ),
             Icon(Icons.chevron_right, color: ProfileColors.textLight, size: 22),
           ],
         ),
@@ -238,16 +419,33 @@ class SettingsMenu extends StatelessWidget {
     );
   }
 
-  Widget _buildSimpleMenuItem(BuildContext context, IconData icon, String title, VoidCallback onTap) {
+  Widget _buildSimpleMenuItem(
+    BuildContext context,
+    IconData icon,
+    String title,
+    VoidCallback onTap,
+  ) {
     return GestureDetector(
       onTap: onTap,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         child: Row(
           children: [
-            Container(width: 40, child: Icon(icon, color: ProfileColors.primary, size: 22)),
+            Container(
+              width: 40,
+              child: Icon(icon, color: ProfileColors.primary, size: 22),
+            ),
             const SizedBox(width: 12),
-            Expanded(child: Text(title, style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500, color: ProfileColors.textPrimary))),
+            Expanded(
+              child: Text(
+                title,
+                style: GoogleFonts.poppins(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: ProfileColors.textPrimary,
+                ),
+              ),
+            ),
             Icon(Icons.chevron_right, color: ProfileColors.textLight, size: 22),
           ],
         ),
@@ -262,12 +460,33 @@ class SettingsMenu extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         child: Row(
           children: [
-            Container(width: 40, child: Icon(Icons.lock_outline, color: ProfileColors.primary, size: 22)),
+            Container(
+              width: 40,
+              child: Icon(Icons.lock_outline, color: ProfileColors.primary, size: 22),
+            ),
             const SizedBox(width: 12),
-            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text('Password', style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500, color: ProfileColors.textPrimary)),
-              Text('********', style: GoogleFonts.poppins(fontSize: 13, color: ProfileColors.textSecondary)),
-            ])),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Password',
+                    style: GoogleFonts.poppins(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color: ProfileColors.textPrimary,
+                    ),
+                  ),
+                  Text(
+                    '********',
+                    style: GoogleFonts.poppins(
+                      fontSize: 13,
+                      color: ProfileColors.textSecondary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
             Icon(Icons.chevron_right, color: ProfileColors.textLight, size: 22),
           ],
         ),
@@ -275,21 +494,42 @@ class SettingsMenu extends StatelessWidget {
     );
   }
 
-  void _editField(BuildContext context, String fieldName, String currentValue, Function(String) onSave) {
-    final controller = TextEditingController(text: currentValue == 'Not set' ? '' : currentValue);
+  void _editField(
+    BuildContext context,
+    String fieldName,
+    String currentValue,
+    Function(String) onSave,
+  ) {
+    final controller = TextEditingController(
+      text: currentValue == 'Not set' ? '' : currentValue,
+    );
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Edit $fieldName', style: GoogleFonts.poppins(color: ProfileColors.primary)),
-        content: TextField(controller: controller, decoration: InputDecoration(hintText: 'Enter $fieldName', border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)))),
+        title: Text(
+          'Edit $fieldName',
+          style: GoogleFonts.poppins(color: ProfileColors.primary),
+        ),
+        content: TextField(
+          controller: controller,
+          decoration: InputDecoration(
+            hintText: 'Enter $fieldName',
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+          ),
+        ),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: Text('Cancel', style: TextStyle(color: ProfileColors.textLight))),
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Cancel', style: TextStyle(color: ProfileColors.textLight)),
+          ),
           ElevatedButton(
             onPressed: () {
               if (controller.text.isNotEmpty) onSave(controller.text);
               Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('$fieldName updated!')));
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('$fieldName updated!')),
+              );
             },
             style: ElevatedButton.styleFrom(backgroundColor: ProfileColors.primary),
             child: const Text('Save'),
@@ -309,21 +549,42 @@ class SettingsMenu extends StatelessWidget {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            TextField(controller: newPass, obscureText: true, decoration: const InputDecoration(hintText: 'New Password', border: OutlineInputBorder())),
+            TextField(
+              controller: newPass,
+              obscureText: true,
+              decoration: const InputDecoration(
+                hintText: 'New Password',
+                border: OutlineInputBorder(),
+              ),
+            ),
             const SizedBox(height: 12),
-            TextField(controller: confirmPass, obscureText: true, decoration: const InputDecoration(hintText: 'Confirm Password', border: OutlineInputBorder())),
+            TextField(
+              controller: confirmPass,
+              obscureText: true,
+              decoration: const InputDecoration(
+                hintText: 'Confirm Password',
+                border: OutlineInputBorder(),
+              ),
+            ),
           ],
         ),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
           ElevatedButton(
             onPressed: () {
               if (newPass.text == confirmPass.text && newPass.text.isNotEmpty) {
                 Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Password changed!')));
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Password changed!')),
+                );
               } else {
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Passwords do not match!')));
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Passwords do not match!')),
+                );
               }
             },
             style: ElevatedButton.styleFrom(backgroundColor: ProfileColors.primary),
@@ -345,13 +606,24 @@ class LogoutButton extends StatelessWidget {
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 16),
         padding: const EdgeInsets.symmetric(vertical: 14),
-        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12), border: Border.all(color: ProfileColors.border)),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: ProfileColors.border),
+        ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(Icons.logout, color: ProfileColors.accentPink, size: 20),
             const SizedBox(width: 8),
-            Text('Logout', style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w600, color: ProfileColors.accentPink)),
+            Text(
+              'Logout',
+              style: GoogleFonts.poppins(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: ProfileColors.accentPink,
+              ),
+            ),
           ],
         ),
       ),
@@ -366,16 +638,27 @@ class LogoutButton extends StatelessWidget {
         content: const Text('Are you sure you want to logout?'),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: Text('Cancel', style: TextStyle(color: ProfileColors.textLight))),
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Cancel', style: TextStyle(color: ProfileColors.textLight)),
+          ),
           TextButton(
             onPressed: () async {
               Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Logging out...')));
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Logging out...')),
+              );
               try {
                 await FirebaseAuth.instance.signOut();
-                Navigator.pushNamedAndRemoveUntil(context, AppRoutes.signIn, (route) => false);
+                Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  AppRoutes.signIn,
+                  (route) => false,
+                );
               } catch (e) {
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Error: $e')),
+                );
               }
             },
             child: Text('Logout', style: TextStyle(color: ProfileColors.accentPink)),
@@ -398,10 +681,18 @@ class ProfileBottomNavBar extends StatelessWidget {
       currentIndex: 4,
       onTap: (index) {
         switch (index) {
-          case 0: Navigator.pushReplacementNamed(context, AppRoutes.home); break;
-          case 1: Navigator.pushNamed(context, AppRoutes.search); break;
-          case 2: Navigator.pushNamed(context, AppRoutes.favorite); break;
-          case 3: Navigator.pushNamed(context, AppRoutes.cart); break;
+          case 0:
+            Navigator.pushReplacementNamed(context, AppRoutes.home);
+            break;
+          case 1:
+            Navigator.pushNamed(context, AppRoutes.search);
+            break;
+          case 2:
+            Navigator.pushNamed(context, AppRoutes.favorite);
+            break;
+          case 3:
+            Navigator.pushNamed(context, AppRoutes.cart);
+            break;
         }
       },
       items: const [

@@ -10,6 +10,7 @@ import 'package:ecommerce_app/features/auth/screens/sign_in_screen.dart';
 import 'package:ecommerce_app/features/auth/screens/create_account_screen.dart';
 import 'package:ecommerce_app/features/search/ui/search_view.dart';
 import 'package:ecommerce_app/features/help_support_view.dart';
+import 'package:ecommerce_app/features/product/screens/product_details_screen.dart';
 
 class AppRoutes {
   static const String home = '/home';
@@ -23,6 +24,7 @@ class AppRoutes {
   static const String confirmation = '/confirmation';
   static const String helpSupport = '/help-support';
   static const String welcome = '/welcome';
+  static const String productDetails = '/product-details';
 
   static Map<String, WidgetBuilder> routes = {
     welcome: (context) => const WelcomeScreen(),
