@@ -5,20 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:ecommerce_app/core/routes/app_routes.dart';
 import 'package:ecommerce_app/services/cart_service.dart';
 import 'package:ecommerce_app/features/product/screens/product_details_screen.dart';
-
-class AppColors {
-  static const Color primary = Color(0xFF1100FF);
-  static const Color primaryLight = Color(0xFF4436FF);
-  static const Color primaryDark = Color(0xFF0A00CC);
-  static const Color accentPink = Color(0xFFF43F5E);
-  static const Color background = Color(0xFFF8F9FA);
-  static const Color surface = Colors.white;
-  static const Color textPrimary = Color(0xFF1A1A2E);
-  static const Color textSecondary = Color(0xFF6B7280);
-  static const Color textLight = Color(0xFF9CA3AF);
-  static const Color border = Color(0xFFE5E7EB);
-  static const Color success = Color(0xFF10B981);
-}
+import 'package:ecommerce_app/core/constants/app_colors.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -397,7 +384,7 @@ class _HomeScreenState extends State<HomeScreen> {
             // Products Grid
             Expanded(
               child: StreamBuilder<QuerySnapshot>(
-                stream: FirebaseFirestore.instance.collection('Products').snapshots(),
+                stream: FirebaseFirestore.instance.collection('products').snapshots(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CircularProgressIndicator());
@@ -455,7 +442,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     padding: const EdgeInsets.all(12),
                     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
-                      childAspectRatio: 0.65,
+                      mainAxisExtent: 315,
                       crossAxisSpacing: 12,
                       mainAxisSpacing: 12,
                     ),

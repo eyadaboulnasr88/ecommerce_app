@@ -3,20 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:ecommerce_app/core/routes/app_routes.dart';
-
-class CheckoutColors {
-  static const Color primary = Color(0xFF1100FF);
-  static const Color primaryLight = Color(0xFF4436FF);
-  static const Color accentPink = Color(0xFFF43F5E);
-  static const Color success = Color(0xFF10B981);
-  static const Color background = Colors.white;
-  static const Color surface = Colors.white;
-  static const Color textPrimary = Color(0xFF1F2937);
-  static const Color textSecondary = Color(0xFF6B7280);
-  static const Color textLight = Color(0xFF9CA3AF);
-  static const Color border = Color(0xFFE5E7EB);
-  static const Color error = Color(0xFFEF4444);
-}
+import 'package:ecommerce_app/core/constants/app_colors.dart';
 
 class CheckoutScreen extends StatefulWidget {
   const CheckoutScreen({super.key});
@@ -204,7 +191,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: CheckoutColors.error,
+        backgroundColor: AppColors.error,
         behavior: SnackBarBehavior.floating,
       ),
     );
@@ -214,7 +201,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   Widget build(BuildContext context) {
     if (userId.isEmpty) {
       return Scaffold(
-        backgroundColor: CheckoutColors.background,
+        backgroundColor: AppColors.background,
         appBar: AppBar(
           title: Text('Checkout', style: GoogleFonts.poppins(fontWeight: FontWeight.w600, fontSize: 18)),
           centerTitle: true,
@@ -225,17 +212,17 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.lock_outline, size: 80, color: CheckoutColors.textLight),
+              Icon(Icons.lock_outline, size: 80, color: AppColors.textLight),
               const SizedBox(height: 16),
               Text(
                 'Please login to checkout',
-                style: GoogleFonts.poppins(fontSize: 16, color: CheckoutColors.textSecondary),
+                style: GoogleFonts.poppins(fontSize: 16, color: AppColors.textSecondary),
               ),
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () => Navigator.pushNamed(context, AppRoutes.signIn),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: CheckoutColors.primary,
+                  backgroundColor: AppColors.primary,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 ),
                 child: Text('Sign In', style: GoogleFonts.poppins(color: Colors.white)),
@@ -247,7 +234,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     }
 
     return Scaffold(
-      backgroundColor: CheckoutColors.background,
+      backgroundColor: AppColors.background,
       appBar: AppBar(
         title: Text('Checkout', style: GoogleFonts.poppins(fontWeight: FontWeight.w600, fontSize: 18)),
         centerTitle: true,
@@ -276,7 +263,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           style: GoogleFonts.poppins(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
-                            color: CheckoutColors.textPrimary,
+                            color: AppColors.textPrimary,
                           ),
                         ),
                         const SizedBox(height: 16),
@@ -341,7 +328,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           style: GoogleFonts.poppins(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
-                            color: CheckoutColors.textPrimary,
+                            color: AppColors.textPrimary,
                           ),
                         ),
                         const SizedBox(height: 12),
@@ -350,18 +337,18 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           maxLines: 3,
                           decoration: InputDecoration(
                             hintText: 'Add any special instructions for delivery...',
-                            hintStyle: GoogleFonts.poppins(color: CheckoutColors.textLight),
+                            hintStyle: GoogleFonts.poppins(color: AppColors.textLight),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
-                              borderSide: BorderSide(color: CheckoutColors.border),
+                              borderSide: BorderSide(color: AppColors.border),
                             ),
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
-                              borderSide: BorderSide(color: CheckoutColors.border),
+                              borderSide: BorderSide(color: AppColors.border),
                             ),
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
-                              borderSide: BorderSide(color: CheckoutColors.primary, width: 2),
+                              borderSide: BorderSide(color: AppColors.primary, width: 2),
                             ),
                           ),
                         ),
@@ -382,19 +369,19 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           style: GoogleFonts.poppins(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
-                            color: CheckoutColors.textPrimary,
+                            color: AppColors.textPrimary,
                           ),
                         ),
                         const SizedBox(height: 12),
                         Container(
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                            border: Border.all(color: CheckoutColors.border),
+                            border: Border.all(color: AppColors.border),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Row(
                             children: [
-                              Icon(Icons.money, color: CheckoutColors.primary),
+                              Icon(Icons.money, color: AppColors.primary),
                               const SizedBox(width: 12),
                               Text(
                                 'Cash on Delivery',
@@ -404,7 +391,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                 ),
                               ),
                               const Spacer(),
-                              Icon(Icons.check_circle, color: CheckoutColors.success, size: 20),
+                              Icon(Icons.check_circle, color: AppColors.success, size: 20),
                             ],
                           ),
                         ),
@@ -432,18 +419,18 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       decoration: InputDecoration(
         labelText: label,
         hintText: hint,
-        prefixIcon: Icon(icon, color: CheckoutColors.primary),
+        prefixIcon: Icon(icon, color: AppColors.primary),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: CheckoutColors.border),
+          borderSide: BorderSide(color: AppColors.border),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: CheckoutColors.border),
+          borderSide: BorderSide(color: AppColors.border),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: CheckoutColors.primary, width: 2),
+          borderSide: BorderSide(color: AppColors.primary, width: 2),
         ),
       ),
     );
@@ -491,7 +478,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   children: [
                     Text(
                       'Subtotal',
-                      style: GoogleFonts.poppins(color: CheckoutColors.textSecondary),
+                      style: GoogleFonts.poppins(color: AppColors.textSecondary),
                     ),
                     Text(
                       '\$${subtotal.toStringAsFixed(2)}',
@@ -505,7 +492,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   children: [
                     Text(
                       'Shipping',
-                      style: GoogleFonts.poppins(color: CheckoutColors.textSecondary),
+                      style: GoogleFonts.poppins(color: AppColors.textSecondary),
                     ),
                     Text(
                       shipping == 0 ? 'Free' : '\$${shipping.toStringAsFixed(2)}',
@@ -513,7 +500,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     ),
                   ],
                 ),
-                const Divider(height: 24, color: CheckoutColors.border),
+                const Divider(height: 24, color: AppColors.border),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -526,7 +513,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       style: GoogleFonts.poppins(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: CheckoutColors.primary,
+                        color: AppColors.primary,
                       ),
                     ),
                   ],
@@ -537,7 +524,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   child: ElevatedButton(
                     onPressed: _isProcessing ? null : _placeOrder,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: CheckoutColors.primary,
+                      backgroundColor: AppColors.primary,
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
@@ -590,7 +577,7 @@ class CartSummarySection extends StatelessWidget {
             style: GoogleFonts.poppins(
               fontSize: 18,
               fontWeight: FontWeight.bold,
-              color: CheckoutColors.textPrimary,
+              color: AppColors.textPrimary,
             ),
           ),
           const SizedBox(height: 12),
@@ -610,11 +597,11 @@ class CartSummarySection extends StatelessWidget {
                 return Center(
                   child: Column(
                     children: [
-                      Icon(Icons.shopping_cart_outlined, size: 50, color: CheckoutColors.textLight),
+                      Icon(Icons.shopping_cart_outlined, size: 50, color: AppColors.textLight),
                       const SizedBox(height: 8),
                       Text(
                         'Your cart is empty',
-                        style: GoogleFonts.poppins(color: CheckoutColors.textSecondary),
+                        style: GoogleFonts.poppins(color: AppColors.textSecondary),
                       ),
                     ],
                   ),
@@ -664,7 +651,7 @@ class CartSummarySection extends StatelessWidget {
                                   ),
                                   Text(
                                     'Qty: ${data['quantity'] ?? 1}',
-                                    style: GoogleFonts.poppins(fontSize: 12, color: CheckoutColors.textSecondary),
+                                    style: GoogleFonts.poppins(fontSize: 12, color: AppColors.textSecondary),
                                   ),
                                 ],
                               ),
@@ -683,7 +670,7 @@ class CartSummarySection extends StatelessWidget {
                       onPressed: () => Navigator.pushNamed(context, AppRoutes.cart),
                       child: Text(
                         'View all items →',
-                        style: GoogleFonts.poppins(color: CheckoutColors.primary),
+                        style: GoogleFonts.poppins(color: AppColors.primary),
                       ),
                     ),
                 ],

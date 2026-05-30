@@ -3,19 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:ecommerce_app/core/routes/app_routes.dart';
-
-class CartColors {
-  static const Color primary = Color(0xFF1100FF);
-  static const Color primaryLight = Color(0xFF4436FF);
-  static const Color accentPink = Color(0xFFF43F5E);
-  static const Color background = Colors.white;
-  static const Color surface = Colors.white;
-  static const Color textPrimary = Color(0xFF1F2937);
-  static const Color textSecondary = Color(0xFF6B7280);
-  static const Color textLight = Color(0xFF9CA3AF);
-  static const Color border = Color(0xFFE5E7EB);
-  static const Color error = Color(0xFFEF4444);
-}
+import 'package:ecommerce_app/core/constants/app_colors.dart';
 
 class CartScreen extends StatefulWidget {
   const CartScreen({super.key});
@@ -72,7 +60,7 @@ class _CartScreenState extends State<CartScreen> {
   Widget build(BuildContext context) {
     if (userId.isEmpty) {
       return Scaffold(
-        backgroundColor: CartColors.background,
+        backgroundColor: AppColors.background,
         appBar: AppBar(
           title: Text('Cart', style: GoogleFonts.poppins(fontWeight: FontWeight.w600, fontSize: 18)),
           centerTitle: true,
@@ -83,17 +71,17 @@ class _CartScreenState extends State<CartScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.shopping_cart_outlined, size: 80, color: CartColors.textLight),
+              Icon(Icons.shopping_cart_outlined, size: 80, color: AppColors.textLight),
               const SizedBox(height: 16),
               Text(
                 'Please login to view your cart',
-                style: GoogleFonts.poppins(fontSize: 16, color: CartColors.textSecondary),
+                style: GoogleFonts.poppins(fontSize: 16, color: AppColors.textSecondary),
               ),
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () => Navigator.pushNamed(context, AppRoutes.signIn),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: CartColors.primary,
+                  backgroundColor: AppColors.primary,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 ),
                 child: Text('Sign In', style: GoogleFonts.poppins(color: Colors.white)),
@@ -105,7 +93,7 @@ class _CartScreenState extends State<CartScreen> {
     }
 
     return Scaffold(
-      backgroundColor: CartColors.background,
+      backgroundColor: AppColors.background,
       appBar: AppBar(
         title: Text('Cart', style: GoogleFonts.poppins(fontWeight: FontWeight.w600, fontSize: 18)),
         centerTitle: true,
@@ -113,7 +101,7 @@ class _CartScreenState extends State<CartScreen> {
         elevation: 0,
         actions: [
           IconButton(
-            icon: Icon(Icons.delete_outline, color: CartColors.error),
+            icon: Icon(Icons.delete_outline, color: AppColors.error),
             onPressed: () => _showClearCartDialog(),
           ),
         ],
@@ -172,22 +160,22 @@ class _CartScreenState extends State<CartScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.shopping_cart_outlined, size: 80, color: CartColors.textLight),
+          Icon(Icons.shopping_cart_outlined, size: 80, color: AppColors.textLight),
           const SizedBox(height: 16),
           Text(
             'Your cart is empty',
-            style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w600, color: CartColors.textPrimary),
+            style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
           ),
           const SizedBox(height: 8),
           Text(
             'Add items to get started',
-            style: GoogleFonts.poppins(fontSize: 14, color: CartColors.textSecondary),
+            style: GoogleFonts.poppins(fontSize: 14, color: AppColors.textSecondary),
           ),
           const SizedBox(height: 20),
           ElevatedButton(
             onPressed: () => Navigator.pushNamed(context, AppRoutes.home),
             style: ElevatedButton.styleFrom(
-              backgroundColor: CartColors.primary,
+              backgroundColor: AppColors.primary,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             ),
             child: Text('Start Shopping', style: GoogleFonts.poppins(color: Colors.white)),
@@ -210,7 +198,7 @@ class _CartScreenState extends State<CartScreen> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: CartColors.border),
+        border: Border.all(color: AppColors.border),
       ),
       child: Row(
         children: [
@@ -247,7 +235,7 @@ class _CartScreenState extends State<CartScreen> {
                     style: GoogleFonts.poppins(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
-                      color: CartColors.textPrimary,
+                      color: AppColors.textPrimary,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -258,7 +246,7 @@ class _CartScreenState extends State<CartScreen> {
                     style: GoogleFonts.poppins(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: CartColors.primary,
+                      color: AppColors.primary,
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -267,7 +255,7 @@ class _CartScreenState extends State<CartScreen> {
                       // Quantity Controls
                       Container(
                         decoration: BoxDecoration(
-                          border: Border.all(color: CartColors.border),
+                          border: Border.all(color: AppColors.border),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Row(
@@ -276,13 +264,13 @@ class _CartScreenState extends State<CartScreen> {
                               onTap: () => _updateQuantity(cartId, quantity - 1),
                               child: Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                                child: Icon(Icons.remove, size: 18, color: CartColors.primary),
+                                child: Icon(Icons.remove, size: 18, color: AppColors.primary),
                               ),
                             ),
                             Container(
                               width: 1,
                               height: 30,
-                              color: CartColors.border,
+                              color: AppColors.border,
                             ),
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -297,13 +285,13 @@ class _CartScreenState extends State<CartScreen> {
                             Container(
                               width: 1,
                               height: 30,
-                              color: CartColors.border,
+                              color: AppColors.border,
                             ),
                             GestureDetector(
                               onTap: () => _updateQuantity(cartId, quantity + 1),
                               child: Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                                child: Icon(Icons.add, size: 18, color: CartColors.primary),
+                                child: Icon(Icons.add, size: 18, color: AppColors.primary),
                               ),
                             ),
                           ],
@@ -312,7 +300,7 @@ class _CartScreenState extends State<CartScreen> {
                       const Spacer(),
                       GestureDetector(
                         onTap: () => _removeFromCart(cartId),
-                        child: Icon(Icons.delete_outline, color: CartColors.error, size: 22),
+                        child: Icon(Icons.delete_outline, color: AppColors.error, size: 22),
                       ),
                     ],
                   ),
@@ -338,14 +326,14 @@ class _CartScreenState extends State<CartScreen> {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
-        border: Border(top: BorderSide(color: CartColors.border)),
+        border: Border(top: BorderSide(color: AppColors.border)),
       ),
       child: Column(
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Subtotal', style: GoogleFonts.poppins(color: CartColors.textSecondary)),
+              Text('Subtotal', style: GoogleFonts.poppins(color: AppColors.textSecondary)),
               Text('\$${subtotal.toStringAsFixed(2)}', style: GoogleFonts.poppins(fontWeight: FontWeight.w500)),
             ],
           ),
@@ -353,16 +341,16 @@ class _CartScreenState extends State<CartScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Shipping', style: GoogleFonts.poppins(color: CartColors.textSecondary)),
+              Text('Shipping', style: GoogleFonts.poppins(color: AppColors.textSecondary)),
               Text(shipping == 0 ? 'Free' : '\$${shipping.toStringAsFixed(2)}', style: GoogleFonts.poppins(fontWeight: FontWeight.w500)),
             ],
           ),
-          const Divider(height: 24, color: CartColors.border),
+          const Divider(height: 24, color: AppColors.border),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text('Total', style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.bold)),
-              Text('\$${total.toStringAsFixed(2)}', style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.bold, color: CartColors.primary)),
+              Text('\$${total.toStringAsFixed(2)}', style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.primary)),
             ],
           ),
           const SizedBox(height: 16),
@@ -373,7 +361,7 @@ class _CartScreenState extends State<CartScreen> {
                   ? null
                   : () => Navigator.pushNamed(context, AppRoutes.checkout),
               style: ElevatedButton.styleFrom(
-                backgroundColor: CartColors.primary,
+                backgroundColor: AppColors.primary,
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               ),
@@ -398,14 +386,14 @@ class _CartScreenState extends State<CartScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('Cancel', style: TextStyle(color: CartColors.textSecondary)),
+            child: Text('Cancel', style: TextStyle(color: AppColors.textSecondary)),
           ),
           TextButton(
             onPressed: () {
               Navigator.pop(context);
               _clearCart();
             },
-            child: Text('Clear', style: TextStyle(color: CartColors.error)),
+            child: Text('Clear', style: TextStyle(color: AppColors.error)),
           ),
         ],
       ),
@@ -420,8 +408,8 @@ class CartBottomNavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return BottomNavigationBar(
       type: BottomNavigationBarType.fixed,
-      selectedItemColor: CartColors.primary,
-      unselectedItemColor: CartColors.textSecondary,
+      selectedItemColor: AppColors.primary,
+      unselectedItemColor: AppColors.textSecondary,
       currentIndex: 3,
       onTap: (index) {
         switch (index) {

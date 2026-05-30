@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:ecommerce_app/features/home/screens/home_screen.dart';
+import 'package:ecommerce_app/core/constants/app_colors.dart';
 import 'package:ecommerce_app/services/cart_service.dart';
 
 class ProductDetailsScreen extends StatefulWidget {

@@ -3,18 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce_app/core/routes/app_routes.dart';
-
-class ProfileColors {
-  static const Color primary = Color(0xFF1100FF);
-  static const Color primaryLight = Color(0xFF4436FF);
-  static const Color accentPink = Color(0xFFF43F5E);
-  static const Color background = Colors.white;
-  static const Color surface = Colors.white;
-  static const Color textPrimary = Color(0xFF1F2937);
-  static const Color textSecondary = Color(0xFF6B7280);
-  static const Color textLight = Color(0xFF9CA3AF);
-  static const Color border = Color(0xFFE5E7EB);
-}
+import 'package:ecommerce_app/core/constants/app_colors.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -101,7 +90,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ProfileColors.background,
+      backgroundColor: AppColors.background,
       appBar: AppBar(
         title: Text(
           'My Profile',
@@ -113,10 +102,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
         centerTitle: true,
         backgroundColor: Colors.white,
         elevation: 0,
-        foregroundColor: ProfileColors.textPrimary,
+        foregroundColor: AppColors.textPrimary,
         actions: [
           IconButton(
-            icon: Icon(Icons.edit_outlined, color: ProfileColors.primary),
+            icon: Icon(Icons.edit_outlined, color: AppColors.primary),
             onPressed: () => _showEditProfileDialog(),
           ),
         ],
@@ -159,7 +148,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           style: GoogleFonts.poppins(
             fontWeight: FontWeight.bold,
             fontSize: 20,
-            color: ProfileColors.primary,
+            color: AppColors.primary,
           ),
         ),
         content: SingleChildScrollView(
@@ -180,7 +169,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('Cancel', style: TextStyle(color: ProfileColors.textLight)),
+            child: Text('Cancel', style: TextStyle(color: AppColors.textLight)),
           ),
           ElevatedButton(
             onPressed: () {
@@ -199,7 +188,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               );
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: ProfileColors.primary,
+              backgroundColor: AppColors.primary,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             ),
             child: const Text('Save'),
@@ -218,19 +207,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
       controller: controller,
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: GoogleFonts.poppins(color: ProfileColors.textSecondary),
-        prefixIcon: Icon(icon, color: ProfileColors.primary),
+        labelStyle: GoogleFonts.poppins(color: AppColors.textSecondary),
+        prefixIcon: Icon(icon, color: AppColors.primary),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: ProfileColors.border),
+          borderSide: BorderSide(color: AppColors.border),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: ProfileColors.border),
+          borderSide: BorderSide(color: AppColors.border),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: ProfileColors.primary, width: 2),
+          borderSide: BorderSide(color: AppColors.primary, width: 2),
         ),
       ),
     );
@@ -256,7 +245,7 @@ class ProfileHeader extends StatelessWidget {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               gradient: const LinearGradient(
-                colors: [ProfileColors.primary, ProfileColors.primaryLight],
+                colors: [AppColors.primary, AppColors.primaryLight],
               ),
             ),
             child: const Center(
@@ -269,7 +258,7 @@ class ProfileHeader extends StatelessWidget {
             style: GoogleFonts.poppins(
               fontSize: 20,
               fontWeight: FontWeight.bold,
-              color: ProfileColors.textPrimary,
+              color: AppColors.textPrimary,
             ),
           ),
           const SizedBox(height: 4),
@@ -278,7 +267,7 @@ class ProfileHeader extends StatelessWidget {
               username,
               style: GoogleFonts.poppins(
                 fontSize: 14,
-                color: ProfileColors.textSecondary,
+                color: AppColors.textSecondary,
               ),
             ),
         ],
@@ -327,7 +316,7 @@ class SettingsMenu extends StatelessWidget {
               'subscription': userSubscription,
             }),
           ),
-          const Divider(height: 1, indent: 56, color: ProfileColors.border),
+          const Divider(height: 1, indent: 56, color: AppColors.border),
           _buildMenuItem(
             context,
             Icons.email_outlined,
@@ -342,7 +331,7 @@ class SettingsMenu extends StatelessWidget {
               'subscription': userSubscription,
             }),
           ),
-          const Divider(height: 1, indent: 56, color: ProfileColors.border),
+          const Divider(height: 1, indent: 56, color: AppColors.border),
           _buildMenuItem(
             context,
             Icons.person_outline,
@@ -357,7 +346,7 @@ class SettingsMenu extends StatelessWidget {
               'subscription': userSubscription,
             }),
           ),
-          const Divider(height: 1, indent: 56, color: ProfileColors.border),
+          const Divider(height: 1, indent: 56, color: AppColors.border),
           _buildMenuItem(
             context,
             Icons.location_on_outlined,
@@ -372,7 +361,7 @@ class SettingsMenu extends StatelessWidget {
               'subscription': userSubscription,
             }),
           ),
-          const Divider(height: 1, indent: 56, color: ProfileColors.border),
+          const Divider(height: 1, indent: 56, color: AppColors.border),
           _buildMenuItem(
             context,
             Icons.credit_card_outlined,
@@ -387,9 +376,9 @@ class SettingsMenu extends StatelessWidget {
               'subscription': value,
             }),
           ),
-          const Divider(height: 1, indent: 56, color: ProfileColors.border),
+          const Divider(height: 1, indent: 56, color: AppColors.border),
           _buildPasswordItem(context),
-          const Divider(height: 1, indent: 56, color: ProfileColors.border),
+          const Divider(height: 1, indent: 56, color: AppColors.border),
           _buildMenuItem(
             context,
             Icons.phone_outlined,
@@ -404,7 +393,7 @@ class SettingsMenu extends StatelessWidget {
               'subscription': userSubscription,
             }),
           ),
-          const Divider(height: 1, indent: 56, color: ProfileColors.border),
+          const Divider(height: 1, indent: 56, color: AppColors.border),
           _buildSimpleMenuItem(
             context,
             Icons.delete_outline,
@@ -413,7 +402,7 @@ class SettingsMenu extends StatelessWidget {
               const SnackBar(content: Text('Cache cleared!')),
             ),
           ),
-          const Divider(height: 1, indent: 56, color: ProfileColors.border),
+          const Divider(height: 1, indent: 56, color: AppColors.border),
           _buildSimpleMenuItem(
             context,
             Icons.history_outlined,
@@ -423,7 +412,7 @@ class SettingsMenu extends StatelessWidget {
             ),
           ),
           // ==================== HELP & SUPPORT ====================
-          const Divider(height: 1, indent: 56, color: ProfileColors.border),
+          const Divider(height: 1, indent: 56, color: AppColors.border),
           _buildSimpleMenuItem(
             context,
             Icons.help_outline,
@@ -450,7 +439,7 @@ class SettingsMenu extends StatelessWidget {
           children: [
             Container(
               width: 40,
-              child: Icon(icon, color: ProfileColors.primary, size: 22),
+              child: Icon(icon, color: AppColors.primary, size: 22),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -462,7 +451,7 @@ class SettingsMenu extends StatelessWidget {
                     style: GoogleFonts.poppins(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
-                      color: ProfileColors.textPrimary,
+                      color: AppColors.textPrimary,
                     ),
                   ),
                   if (subtitle.isNotEmpty)
@@ -470,13 +459,13 @@ class SettingsMenu extends StatelessWidget {
                       subtitle,
                       style: GoogleFonts.poppins(
                         fontSize: 13,
-                        color: ProfileColors.textSecondary,
+                        color: AppColors.textSecondary,
                       ),
                     ),
                 ],
               ),
             ),
-            Icon(Icons.chevron_right, color: ProfileColors.textLight, size: 22),
+            Icon(Icons.chevron_right, color: AppColors.textLight, size: 22),
           ],
         ),
       ),
@@ -497,7 +486,7 @@ class SettingsMenu extends StatelessWidget {
           children: [
             Container(
               width: 40,
-              child: Icon(icon, color: ProfileColors.primary, size: 22),
+              child: Icon(icon, color: AppColors.primary, size: 22),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -506,11 +495,11 @@ class SettingsMenu extends StatelessWidget {
                 style: GoogleFonts.poppins(
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
-                  color: ProfileColors.textPrimary,
+                  color: AppColors.textPrimary,
                 ),
               ),
             ),
-            Icon(Icons.chevron_right, color: ProfileColors.textLight, size: 22),
+            Icon(Icons.chevron_right, color: AppColors.textLight, size: 22),
           ],
         ),
       ),
@@ -526,7 +515,7 @@ class SettingsMenu extends StatelessWidget {
           children: [
             Container(
               width: 40,
-              child: Icon(Icons.lock_outline, color: ProfileColors.primary, size: 22),
+              child: Icon(Icons.lock_outline, color: AppColors.primary, size: 22),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -538,20 +527,20 @@ class SettingsMenu extends StatelessWidget {
                     style: GoogleFonts.poppins(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
-                      color: ProfileColors.textPrimary,
+                      color: AppColors.textPrimary,
                     ),
                   ),
                   Text(
                     '********',
                     style: GoogleFonts.poppins(
                       fontSize: 13,
-                      color: ProfileColors.textSecondary,
+                      color: AppColors.textSecondary,
                     ),
                   ),
                 ],
               ),
             ),
-            Icon(Icons.chevron_right, color: ProfileColors.textLight, size: 22),
+            Icon(Icons.chevron_right, color: AppColors.textLight, size: 22),
           ],
         ),
       ),
@@ -572,7 +561,7 @@ class SettingsMenu extends StatelessWidget {
       builder: (context) => AlertDialog(
         title: Text(
           'Edit $fieldName',
-          style: GoogleFonts.poppins(color: ProfileColors.primary),
+          style: GoogleFonts.poppins(color: AppColors.primary),
         ),
         content: TextField(
           controller: controller,
@@ -585,7 +574,7 @@ class SettingsMenu extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('Cancel', style: TextStyle(color: ProfileColors.textLight)),
+            child: Text('Cancel', style: TextStyle(color: AppColors.textLight)),
           ),
           ElevatedButton(
             onPressed: () {
@@ -595,7 +584,7 @@ class SettingsMenu extends StatelessWidget {
                 SnackBar(content: Text('$fieldName updated!')),
               );
             },
-            style: ElevatedButton.styleFrom(backgroundColor: ProfileColors.primary),
+            style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
             child: const Text('Save'),
           ),
         ],
@@ -662,7 +651,7 @@ class SettingsMenu extends StatelessWidget {
                 messenger.showSnackBar(SnackBar(content: Text(message)));
               }
             },
-            style: ElevatedButton.styleFrom(backgroundColor: ProfileColors.primary),
+            style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
             child: const Text('Update', style: TextStyle(color: Colors.white)),
           ),
         ],
@@ -684,19 +673,19 @@ class LogoutButton extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: ProfileColors.border),
+          border: Border.all(color: AppColors.border),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.logout, color: ProfileColors.accentPink, size: 20),
+            Icon(Icons.logout, color: AppColors.accentPink, size: 20),
             const SizedBox(width: 8),
             Text(
               'Logout',
               style: GoogleFonts.poppins(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
-                color: ProfileColors.accentPink,
+                color: AppColors.accentPink,
               ),
             ),
           ],
@@ -716,7 +705,7 @@ class LogoutButton extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext),
-            child: Text('Cancel', style: TextStyle(color: ProfileColors.textLight)),
+            child: Text('Cancel', style: TextStyle(color: AppColors.textLight)),
           ),
           TextButton(
             onPressed: () async {
@@ -738,7 +727,7 @@ class LogoutButton extends StatelessWidget {
                 );
               }
             },
-            child: Text('Logout', style: TextStyle(color: ProfileColors.accentPink)),
+            child: Text('Logout', style: TextStyle(color: AppColors.accentPink)),
           ),
         ],
       ),
@@ -753,8 +742,8 @@ class ProfileBottomNavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return BottomNavigationBar(
       type: BottomNavigationBarType.fixed,
-      selectedItemColor: ProfileColors.primary,
-      unselectedItemColor: ProfileColors.textSecondary,
+      selectedItemColor: AppColors.primary,
+      unselectedItemColor: AppColors.textSecondary,
       currentIndex: 4,
       onTap: (index) {
         switch (index) {
