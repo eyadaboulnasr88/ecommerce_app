@@ -146,7 +146,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   void _showEditProfileDialog() {
     final TextEditingController nameController = TextEditingController(text: userName);
-    final TextEditingController emailController = TextEditingController(text: userEmail);
     final TextEditingController usernameController = TextEditingController(text: userUsername.replaceAll('@', ''));
     final TextEditingController phoneController = TextEditingController(text: userPhone);
 
@@ -167,8 +166,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
             children: [
               _buildTextField(controller: nameController, label: 'Full Name', icon: Icons.person_outline),
               const SizedBox(height: 12),
-              _buildTextField(controller: emailController, label: 'Email', icon: Icons.email_outlined),
-              const SizedBox(height: 12),
               _buildTextField(controller: usernameController, label: 'Username', icon: Icons.person_outline),
               const SizedBox(height: 12),
               _buildTextField(controller: phoneController, label: 'Phone Number', icon: Icons.phone_outlined),
@@ -185,7 +182,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
             onPressed: () {
               setState(() {
                 userName = nameController.text;
-                userEmail = emailController.text;
                 userUsername = usernameController.text.startsWith('@')
                     ? usernameController.text
                     : '@${usernameController.text}';
