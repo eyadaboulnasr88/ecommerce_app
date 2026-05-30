@@ -47,7 +47,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           if (userName.isEmpty) userName = data['name'] ?? '';
           userUsername = data['username'] ?? '';
           userPhone = data['phone'] ?? '';
-          userLocation = data['location'] ?? '';
+          userLocation = data['country'] ?? '';
           userSubscription = data['subscription'] ?? '';
         });
       }
@@ -71,7 +71,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         'email': userEmail,
         'username': userUsername,
         'phone': userPhone,
-        'location': userLocation,
+        'country': userLocation,
         'subscription': userSubscription,
         'updatedAt': FieldValue.serverTimestamp(),
       }, SetOptions(merge: true));
@@ -90,7 +90,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       if (data.containsKey('email')) userEmail = data['email'];
       if (data.containsKey('username')) userUsername = data['username'];
       if (data.containsKey('phone')) userPhone = data['phone'];
-      if (data.containsKey('location')) userLocation = data['location'];
+      if (data.containsKey('country')) userLocation = data['country'];
       if (data.containsKey('subscription')) userSubscription = data['subscription'];
     });
     _saveToFirebase();
@@ -321,7 +321,7 @@ class SettingsMenu extends StatelessWidget {
               'email': userEmail,
               'username': userUsername,
               'phone': userPhone,
-              'location': userLocation,
+              'country': userLocation,
               'subscription': userSubscription,
             }),
           ),
@@ -336,7 +336,7 @@ class SettingsMenu extends StatelessWidget {
               'email': value,
               'username': userUsername,
               'phone': userPhone,
-              'location': userLocation,
+              'country': userLocation,
               'subscription': userSubscription,
             }),
           ),
@@ -351,7 +351,7 @@ class SettingsMenu extends StatelessWidget {
               'email': userEmail,
               'username': value,
               'phone': userPhone,
-              'location': userLocation,
+              'country': userLocation,
               'subscription': userSubscription,
             }),
           ),
@@ -359,14 +359,14 @@ class SettingsMenu extends StatelessWidget {
           _buildMenuItem(
             context,
             Icons.location_on_outlined,
-            'Location',
+            'Country',
             userLocation.isEmpty ? 'Not set' : userLocation,
             (value) => onDataUpdated({
               'name': userName,
               'email': userEmail,
               'username': userUsername,
               'phone': userPhone,
-              'location': value,
+              'country': value,
               'subscription': userSubscription,
             }),
           ),
@@ -381,7 +381,7 @@ class SettingsMenu extends StatelessWidget {
               'email': userEmail,
               'username': userUsername,
               'phone': userPhone,
-              'location': userLocation,
+              'country': userLocation,
               'subscription': value,
             }),
           ),
@@ -398,7 +398,7 @@ class SettingsMenu extends StatelessWidget {
               'email': userEmail,
               'username': userUsername,
               'phone': value,
-              'location': userLocation,
+              'country': userLocation,
               'subscription': userSubscription,
             }),
           ),
