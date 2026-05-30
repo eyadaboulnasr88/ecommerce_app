@@ -855,29 +855,24 @@ class _UpdateEmailDialogState extends State<_UpdateEmailDialog> {
             if (newEmail.isEmpty || !newEmail.contains('@')) return;
             final user = FirebaseAuth.instance.currentUser;
             if (user == null) return;
+            final messenger = ScaffoldMessenger.of(context);
             Navigator.pop(context);
             try {
               await user.verifyBeforeUpdateEmail(newEmail);
               widget.onSave(newEmail);
-              if (context.mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('Verification sent to $newEmail — confirm to apply'),
-                  ),
-                );
-              }
+              messenger.showSnackBar(
+                SnackBar(
+                  content: Text('Verification sent to $newEmail — confirm to apply'),
+                ),
+              );
             } on FirebaseAuthException catch (e) {
               debugPrint('verifyBeforeUpdateEmail error: ${e.code}');
-              if (!context.mounted) return;
               final msg = e.code == 'requires-recent-login'
                   ? 'Sign out and back in, then try again.'
                   : e.message ?? 'Failed to update email.';
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
+              messenger.showSnackBar(SnackBar(content: Text(msg)));
             } catch (e) {
-              if (!context.mounted) return;
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Error: $e')),
-              );
+              messenger.showSnackBar(SnackBar(content: Text('Error: $e')));
             }
           },
           style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
