@@ -4,6 +4,7 @@ class ProductModel {
   final String description;
   final String image;
   final double price;
+  final String category;
 
   ProductModel({
     required this.id,
@@ -11,6 +12,7 @@ class ProductModel {
     required this.description,
     required this.image,
     required this.price,
+    required this.category,
   });
 
   factory ProductModel.fromJson(
@@ -23,6 +25,7 @@ class ProductModel {
       description: json['description'] ?? '',
       image: json['image'] ?? '',
       price: (json['price'] as num?)?.toDouble() ?? 0.0,
+      category: json['category'] ?? '',
     );
   }
 
@@ -32,5 +35,6 @@ class ProductModel {
         'description': description,
         'image': image,
         'price': price,
+        'category': category,
       };
 }
