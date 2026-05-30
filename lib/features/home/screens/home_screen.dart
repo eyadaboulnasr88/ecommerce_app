@@ -577,30 +577,23 @@ class _HomeScreenState extends State<HomeScreen> {
                                     const SizedBox(height: 4),
                                     Row(
                                       children: [
-                                        const Icon(Icons.star, size: 14, color: Colors.amber),
+                                        ...List.generate(5, (i) {
+                                          final full = productRating.floor();
+                                          final half = (productRating - full) >= 0.5;
+                                          final IconData icon = i < full
+                                              ? Icons.star
+                                              : (i == full && half ? Icons.star_half : Icons.star_border);
+                                          final Color color = i < full || (i == full && half)
+                                              ? Colors.amber
+                                              : Colors.grey[400]!;
+                                          return Icon(icon, size: 14, color: color);
+                                        }),
                                         const SizedBox(width: 4),
                                         Text(
-                                          productRating.toString(),
+                                          productRating.toStringAsFixed(1),
                                           style: GoogleFonts.poppins(
                                             fontSize: 12,
                                             color: AppColors.textSecondary,
-                                          ),
-                                        ),
-                                        const SizedBox(width: 8),
-                                        Container(
-                                          width: 4,
-                                          height: 4,
-                                          decoration: const BoxDecoration(
-                                            color: Colors.grey,
-                                            shape: BoxShape.circle,
-                                          ),
-                                        ),
-                                        const SizedBox(width: 8),
-                                        Text(
-                                          '1.2k sold',
-                                          style: GoogleFonts.poppins(
-                                            fontSize: 11,
-                                            color: AppColors.textLight,
                                           ),
                                         ),
                                       ],
