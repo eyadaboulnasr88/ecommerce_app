@@ -20,8 +20,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String userUsername = '';
   String userPhone = '';
   String userLocation = '';
-  String userSubscription = '';
-
   final _editNameController = TextEditingController();
   final _editUsernameController = TextEditingController();
   final _editPhoneController = TextEditingController();
@@ -61,7 +59,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
           userUsername = data['username'] ?? '';
           userPhone = data['phone'] ?? '';
           userLocation = data['country'] ?? '';
-          userSubscription = data['subscription'] ?? '';
         });
       }
     } catch (e) {
@@ -85,7 +82,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         'username': userUsername,
         'phone': userPhone,
         'country': userLocation,
-        'subscription': userSubscription,
         'updatedAt': FieldValue.serverTimestamp(),
       }, SetOptions(merge: true));
     } catch (e) {
@@ -104,7 +100,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       if (data.containsKey('username')) userUsername = data['username'];
       if (data.containsKey('phone')) userPhone = data['phone'];
       if (data.containsKey('country')) userLocation = data['country'];
-      if (data.containsKey('subscription')) userSubscription = data['subscription'];
     });
     _saveToFirebase();
   }
@@ -143,7 +138,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
               userUsername: userUsername,
               userPhone: userPhone,
               userLocation: userLocation,
-              userSubscription: userSubscription,
               onDataUpdated: _updateUserData,
             ),
             const SizedBox(height: 30),
@@ -301,7 +295,6 @@ class SettingsMenu extends StatelessWidget {
   final String userUsername;
   final String userPhone;
   final String userLocation;
-  final String userSubscription;
   final Function(Map<String, dynamic>) onDataUpdated;
 
   const SettingsMenu({
@@ -311,7 +304,6 @@ class SettingsMenu extends StatelessWidget {
     required this.userUsername,
     required this.userPhone,
     required this.userLocation,
-    required this.userSubscription,
     required this.onDataUpdated,
   });
 
@@ -332,7 +324,6 @@ class SettingsMenu extends StatelessWidget {
               'username': userUsername,
               'phone': userPhone,
               'country': userLocation,
-              'subscription': userSubscription,
             }),
           ),
           const Divider(height: 1, indent: 56, color: AppColors.border),
@@ -347,7 +338,6 @@ class SettingsMenu extends StatelessWidget {
               'username': userUsername,
               'phone': userPhone,
               'country': userLocation,
-              'subscription': userSubscription,
             }),
             customOnTap: () => _updateEmail(
               context,
@@ -357,7 +347,6 @@ class SettingsMenu extends StatelessWidget {
                 'username': userUsername,
                 'phone': userPhone,
                 'country': userLocation,
-                'subscription': userSubscription,
               }),
             ),
           ),
@@ -373,7 +362,6 @@ class SettingsMenu extends StatelessWidget {
               'username': value,
               'phone': userPhone,
               'country': userLocation,
-              'subscription': userSubscription,
             }),
           ),
           const Divider(height: 1, indent: 56, color: AppColors.border),
@@ -388,7 +376,6 @@ class SettingsMenu extends StatelessWidget {
               'username': userUsername,
               'phone': userPhone,
               'country': value,
-              'subscription': userSubscription,
             }),
             customOnTap: () => _pickCountry(
               context,
@@ -398,24 +385,8 @@ class SettingsMenu extends StatelessWidget {
                 'username': userUsername,
                 'phone': userPhone,
                 'country': value,
-                'subscription': userSubscription,
               }),
             ),
-          ),
-          const Divider(height: 1, indent: 56, color: AppColors.border),
-          _buildMenuItem(
-            context,
-            Icons.credit_card_outlined,
-            'Subscription',
-            userSubscription.isEmpty ? 'Not subscribed' : userSubscription,
-            (value) => onDataUpdated({
-              'name': userName,
-              'email': userEmail,
-              'username': userUsername,
-              'phone': userPhone,
-              'country': userLocation,
-              'subscription': value,
-            }),
           ),
           const Divider(height: 1, indent: 56, color: AppColors.border),
           _buildPasswordItem(context),
@@ -431,7 +402,6 @@ class SettingsMenu extends StatelessWidget {
               'username': userUsername,
               'phone': value,
               'country': userLocation,
-              'subscription': userSubscription,
             }),
           ),
           const Divider(height: 1, indent: 56, color: AppColors.border),
