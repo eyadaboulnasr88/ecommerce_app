@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -6,6 +7,7 @@ import 'package:ecommerce_app/core/routes/app_routes.dart';
 import 'package:ecommerce_app/services/cart_service.dart';
 import 'package:ecommerce_app/features/product/screens/product_details_screen.dart';
 import 'package:ecommerce_app/core/constants/app_colors.dart';
+import 'package:ecommerce_app/core/widgets/app_bottom_nav_bar.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -19,7 +21,6 @@ class _HomeScreenState extends State<HomeScreen> {
   double minPrice = 0;
   double maxPrice = 1000;
   bool showFilters = false;
-  int _selectedNavIndex = 0;
 
   final List<String> categories = [
     'All',
@@ -30,6 +31,35 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final CartService _cartService = CartService();
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  Set<String> _favoriteIds = {};
+  StreamSubscription? _favoritesSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    final userId = FirebaseAuth.instance.currentUser?.uid;
+    if (userId != null) {
+      _favoritesSubscription = FirebaseFirestore.instance
+          .collection('favorites')
+          .where('userId', isEqualTo: userId)
+          .snapshots()
+          .listen((snapshot) {
+        if (mounted) {
+          setState(() {
+            _favoriteIds = snapshot.docs
+                .map((d) => (d.data()['productId'] ?? '') as String)
+                .toSet();
+          });
+        }
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _favoritesSubscription?.cancel();
+    super.dispose();
+  }
 
   double _parsePrice(dynamic price) {
     if (price == null) return 0.0;
@@ -57,6 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
       quantity: 1,
     );
 
+    if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('Added to cart!'),
@@ -92,12 +123,17 @@ class _HomeScreenState extends State<HomeScreen> {
         'imageUrl': product['image'] ?? product['imageUrl'] ?? '',
         'createdAt': FieldValue.serverTimestamp(),
       });
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Added to favorites!')),
       );
     } else {
+      for (final doc in existing.docs) {
+        await doc.reference.delete();
+      }
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Already in favorites!')),
+        const SnackBar(content: Text('Removed from favorites!')),
       );
     }
   }
@@ -144,17 +180,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ],
                   ),
-                  Row(
-                    children: [
-                      IconButton(
-                        icon: Icon(Icons.notifications_outlined, color: AppColors.primary),
-                        onPressed: () {},
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.shopping_cart_outlined, color: AppColors.primary),
-                        onPressed: () => Navigator.pushNamed(context, AppRoutes.cart),
-                      ),
-                    ],
+                  IconButton(
+                    icon: Icon(Icons.shopping_cart_outlined, color: AppColors.primary),
+                    onPressed: () => Navigator.pushNamed(context, AppRoutes.cart),
                   ),
                 ],
               ),
@@ -171,7 +199,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     borderRadius: BorderRadius.circular(30),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
+                        color: Colors.black.withValues(alpha: 0.05),
                         blurRadius: 8,
                         offset: const Offset(0, 2),
                       ),
@@ -236,7 +264,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         shape: StadiumBorder(side: BorderSide(color: AppColors.border)),
                       ),
                     );
-                  }).toList(),
+                  }),
                 ],
               ),
             ),
@@ -254,7 +282,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     borderRadius: BorderRadius.circular(12),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
+                        color: Colors.black.withValues(alpha: 0.05),
                         blurRadius: 8,
                       ),
                     ],
@@ -472,7 +500,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             borderRadius: BorderRadius.circular(16),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.05),
+                                color: Colors.black.withValues(alpha: 0.05),
                                 blurRadius: 8,
                                 offset: const Offset(0, 2),
                               ),
@@ -519,13 +547,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                             shape: BoxShape.circle,
                                             boxShadow: [
                                               BoxShadow(
-                                                color: Colors.black.withOpacity(0.1),
+                                                color: Colors.black.withValues(alpha: 0.1),
                                                 blurRadius: 4,
                                               ),
                                             ],
                                           ),
                                           child: Icon(
-                                            Icons.favorite_border,
+                                            _favoriteIds.contains(products[index].id)
+                                                ? Icons.favorite
+                                                : Icons.favorite_border,
                                             size: 16,
                                             color: AppColors.accentPink,
                                           ),
@@ -574,30 +604,23 @@ class _HomeScreenState extends State<HomeScreen> {
                                     const SizedBox(height: 4),
                                     Row(
                                       children: [
-                                        const Icon(Icons.star, size: 14, color: Colors.amber),
+                                        ...List.generate(5, (i) {
+                                          final full = productRating.floor();
+                                          final half = (productRating - full) >= 0.5;
+                                          final IconData icon = i < full
+                                              ? Icons.star
+                                              : (i == full && half ? Icons.star_half : Icons.star_border);
+                                          final Color color = i < full || (i == full && half)
+                                              ? Colors.amber
+                                              : Colors.grey[400]!;
+                                          return Icon(icon, size: 14, color: color);
+                                        }),
                                         const SizedBox(width: 4),
                                         Text(
-                                          productRating.toString(),
+                                          productRating.toStringAsFixed(1),
                                           style: GoogleFonts.poppins(
                                             fontSize: 12,
                                             color: AppColors.textSecondary,
-                                          ),
-                                        ),
-                                        const SizedBox(width: 8),
-                                        Container(
-                                          width: 4,
-                                          height: 4,
-                                          decoration: const BoxDecoration(
-                                            color: Colors.grey,
-                                            shape: BoxShape.circle,
-                                          ),
-                                        ),
-                                        const SizedBox(width: 8),
-                                        Text(
-                                          '1.2k sold',
-                                          style: GoogleFonts.poppins(
-                                            fontSize: 11,
-                                            color: AppColors.textLight,
                                           ),
                                         ),
                                       ],
@@ -668,39 +691,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        backgroundColor: Colors.white,
-        selectedItemColor: AppColors.primary,
-        unselectedItemColor: AppColors.textSecondary,
-        currentIndex: _selectedNavIndex,
-        onTap: (index) {
-          if (index == 0) return;
-          setState(() => _selectedNavIndex = index);
-          switch (index) {
-            case 1:
-              Navigator.pushNamed(context, AppRoutes.search);
-              break;
-            case 2:
-              Navigator.pushNamed(context, AppRoutes.favorite);
-              break;
-            case 3:
-              Navigator.pushNamed(context, AppRoutes.cart);
-              break;
-            case 4:
-              Navigator.pushNamed(context, AppRoutes.profile);
-              break;
-          }
-          setState(() => _selectedNavIndex = 0);
-        },
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home_outlined), activeIcon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.search_outlined), activeIcon: Icon(Icons.search), label: 'Search'),
-          BottomNavigationBarItem(icon: Icon(Icons.favorite_border), activeIcon: Icon(Icons.favorite), label: 'Favorites'),
-          BottomNavigationBarItem(icon: Icon(Icons.shopping_cart_outlined), activeIcon: Icon(Icons.shopping_cart), label: 'Cart'),
-          BottomNavigationBarItem(icon: Icon(Icons.person_outline), activeIcon: Icon(Icons.person), label: 'Profile'),
-        ],
-      ),
+      bottomNavigationBar: const AppBottomNavBar(currentIndex: 0),
     );
   }
 }

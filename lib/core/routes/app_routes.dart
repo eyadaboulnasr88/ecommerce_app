@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ecommerce_app/core/constants/app_colors.dart';
 import 'package:ecommerce_app/features/home/screens/home_screen.dart';
 import 'package:ecommerce_app/features/profile/screens/profile_screen.dart';
 import 'package:ecommerce_app/features/cart/screens/cart_screen.dart';
@@ -10,7 +11,6 @@ import 'package:ecommerce_app/features/auth/screens/sign_in_screen.dart';
 import 'package:ecommerce_app/features/auth/screens/create_account_screen.dart';
 import 'package:ecommerce_app/features/search/ui/search_view.dart';
 import 'package:ecommerce_app/features/help_support_view.dart';
-import 'package:ecommerce_app/features/product/screens/product_details_screen.dart';
 
 class AppRoutes {
   static const String home = '/home';
@@ -24,7 +24,6 @@ class AppRoutes {
   static const String confirmation = '/confirmation';
   static const String helpSupport = '/help-support';
   static const String welcome = '/welcome';
-  static const String productDetails = '/product-details';
 
   static Map<String, WidgetBuilder> routes = {
     welcome: (context) => const WelcomeScreen(),
@@ -54,7 +53,7 @@ class PlaceholderScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(title),
-        backgroundColor: const Color(0xFF1100FF),
+        backgroundColor: AppColors.primary,
         foregroundColor: Colors.white,
       ),
       body: Center(
@@ -76,7 +75,7 @@ class PlaceholderScreen extends StatelessWidget {
             ElevatedButton(
               onPressed: () => Navigator.pushReplacementNamed(context, AppRoutes.home),
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF1100FF),
+                backgroundColor: AppColors.primary,
                 padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),

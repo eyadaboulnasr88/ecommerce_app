@@ -59,7 +59,9 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
           return;
         }
       }
-    } catch (_) {}
+    } catch (e) {
+      debugPrint('Failed to load order details: $e');
+    }
 
     if (mounted) {
       setState(() {
@@ -132,7 +134,7 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
             width: 80,
             height: 80,
             decoration: BoxDecoration(
-              color: AppColors.success.withOpacity(0.1),
+              color: AppColors.success.withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
             child: Icon(Icons.check_circle, size: 50, color: AppColors.success),

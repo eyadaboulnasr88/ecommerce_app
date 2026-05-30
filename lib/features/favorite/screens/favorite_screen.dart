@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:ecommerce_app/core/routes/app_routes.dart';
 import 'package:ecommerce_app/core/constants/app_colors.dart';
+import 'package:ecommerce_app/core/widgets/app_bottom_nav_bar.dart';
 
 class FavoriteScreen extends StatefulWidget {
   const FavoriteScreen({super.key});
@@ -135,7 +136,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
             padding: const EdgeInsets.all(16),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
-              childAspectRatio: 0.7,
+              mainAxisExtent: 275,
               crossAxisSpacing: 16,
               mainAxisSpacing: 16,
             ),
@@ -154,7 +155,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
           );
         },
       ),
-      bottomNavigationBar: const FavoriteBottomNavBar(),
+      bottomNavigationBar: const AppBottomNavBar(currentIndex: 2),
     );
   }
 
@@ -202,7 +203,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
         border: Border.all(color: AppColors.border),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.03),
+            color: Colors.black.withValues(alpha: 0.03),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -271,7 +272,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
+                          color: Colors.black.withValues(alpha: 0.1),
                           blurRadius: 4,
                         ),
                       ],
@@ -350,41 +351,3 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
   }
 }
 
-class FavoriteBottomNavBar extends StatelessWidget {
-  const FavoriteBottomNavBar({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return BottomNavigationBar(
-      type: BottomNavigationBarType.fixed,
-      selectedItemColor: AppColors.primary,
-      unselectedItemColor: AppColors.textSecondary,
-      currentIndex: 2,
-      onTap: (index) {
-        switch (index) {
-          case 0:
-            Navigator.pushReplacementNamed(context, AppRoutes.home);
-            break;
-          case 1:
-            Navigator.pushNamed(context, AppRoutes.search);
-            break;
-          case 2:
-            break;
-          case 3:
-            Navigator.pushNamed(context, AppRoutes.cart);
-            break;
-          case 4:
-            Navigator.pushNamed(context, AppRoutes.profile);
-            break;
-        }
-      },
-      items: const [
-        BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-        BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
-        BottomNavigationBarItem(icon: Icon(Icons.favorite), label: 'Favorite'),
-        BottomNavigationBarItem(icon: Icon(Icons.shopping_cart), label: 'Cart'),
-        BottomNavigationBarItem(icon: Icon(Icons.person_outline), label: 'Profile'),
-      ],
-    );
-  }
-}

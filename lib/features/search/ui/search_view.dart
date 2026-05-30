@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ecommerce_app/core/model/product_model.dart';
 import 'package:ecommerce_app/features/search/cubit/search_cubit.dart';
 import 'package:ecommerce_app/features/search/cubit/search_state.dart';
-import 'package:ecommerce_app/features/product/details_product_view.dart';
+import 'package:ecommerce_app/features/product/screens/product_details_screen.dart';
 
 class SearchView extends StatelessWidget {
   const SearchView({super.key});
@@ -26,6 +26,12 @@ class SearchViewBody extends StatefulWidget {
 
 class _SearchViewBodyState extends State<SearchViewBody> {
   final TextEditingController _controller = TextEditingController();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +72,7 @@ class _SearchViewBodyState extends State<SearchViewBody> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => DetailsProductView(product: product),
+                        builder: (_) => ProductDetailsScreen(product: product.toMap()),
                       ),
                     );
                   },

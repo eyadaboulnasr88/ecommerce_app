@@ -37,6 +37,17 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     _loadUserData();
   }
 
+  @override
+  void dispose() {
+    _fullNameController.dispose();
+    _phoneController.dispose();
+    _addressController.dispose();
+    _cityController.dispose();
+    _postalCodeController.dispose();
+    _notesController.dispose();
+    super.dispose();
+  }
+
   Future<void> _loadUserData() async {
     if (userId.isEmpty) return;
 
@@ -443,7 +454,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 10,
             offset: const Offset(0, -2),
           ),
@@ -456,7 +467,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               .where('userId', isEqualTo: userId)
               .snapshots(),
           builder: (context, snapshot) {
-            if (!snapshot.hasData) {
+            if (!snapshot.hasData || _isProcessing) {
               return const Center(child: CircularProgressIndicator());
             }
 

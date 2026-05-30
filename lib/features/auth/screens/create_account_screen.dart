@@ -1,13 +1,10 @@
-import 'dart:math' as math;
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
+import 'package:intl_phone_field/countries.dart' as phone_countries;
 import '../../../core/services/auth_service.dart';
-import 'package:ecommerce_app/core/routes/app_routes.dart';
 
 class CreateAccountScreen extends StatefulWidget {
   const CreateAccountScreen({super.key});
@@ -21,11 +18,13 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _phoneController = TextEditingController();
+  final _usernameController = TextEditingController();
+  final _addressController = TextEditingController();
 
   bool _isLoading = false;
   bool _obscurePassword = true;
-  Uint8List? _avatarBytes;
   String _completePhone = '';
+  String _selectedCountry = '';
 
   static const _blue = Color(0xFF2B3CF3);
   static const _lightBlue = Color(0xFFE8EAFF);
@@ -35,14 +34,49 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
     _emailController.dispose();
     _passwordController.dispose();
     _phoneController.dispose();
+    _usernameController.dispose();
+    _addressController.dispose();
     super.dispose();
   }
 
-  Future<void> _pickImage() async {
-    final picked = await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (picked == null) return;
-    final bytes = await picked.readAsBytes();
-    setState(() => _avatarBytes = bytes); //reading as bytes to work on chrome and phone
+  void _pickCountry() {
+    final search = TextEditingController();
+    var filtered = [...phone_countries.countries];
+    showDialog(
+      context: context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setInner) => AlertDialog(
+          title: TextField(
+            controller: search,
+            decoration: const InputDecoration(
+              hintText: 'Search country...',
+              prefixIcon: Icon(Icons.search),
+              border: InputBorder.none,
+            ),
+            onChanged: (v) => setInner(() {
+              filtered = phone_countries.countries
+                  .where((c) => c.name.toLowerCase().contains(v.toLowerCase()))
+                  .toList();
+            }),
+          ),
+          content: SizedBox(
+            width: double.maxFinite,
+            height: 300,
+            child: ListView.builder(
+              itemCount: filtered.length,
+              itemBuilder: (_, i) => ListTile(
+                leading: Text(filtered[i].flag, style: const TextStyle(fontSize: 22)),
+                title: Text(filtered[i].name, style: GoogleFonts.poppins(fontSize: 14)),
+                onTap: () {
+                  setState(() => _selectedCountry = filtered[i].name);
+                  Navigator.pop(ctx);
+                },
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   Future<void> _signInWithGoogle() async {
@@ -79,11 +113,14 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
       await user.updateDisplayName(displayName);
       await user.reload(); // force local Auth cache to reflect the new displayName
 
-      // Save user profile so checkout can auto-fill name and phone
+      final rawUsername = _usernameController.text.trim();
       await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
         'name': displayName,
         'email': email,
         'phone': _completePhone.isNotEmpty ? _completePhone : phone,
+        'username': rawUsername.isEmpty ? '' : (rawUsername.startsWith('@') ? rawUsername : '@$rawUsername'),
+        'address': _addressController.text.trim(),
+        'country': _selectedCountry,
         'createdAt': FieldValue.serverTimestamp(),
       });
 
@@ -168,37 +205,6 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                       ),
                     ),
                     const SizedBox(height: 32),
-
-                    // ── Avatar / Camera Picker ────────────────────────────
-                    Center(
-                      child: GestureDetector(
-                        onTap: _pickImage,
-                        child: CustomPaint(
-                          painter: _DashedCirclePainter(color: _blue),
-                          child: SizedBox(
-                            width: 90,
-                            height: 90,
-                            child: _avatarBytes != null
-                                ? ClipOval(
-                                    child: Image.memory(
-                                      _avatarBytes!,
-                                      width: 90,
-                                      height: 90,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  )
-                                : const Center(
-                                    child: Icon(
-                                      Icons.camera_alt_outlined,
-                                      color: _blue,
-                                      size: 32,
-                                    ),
-                                  ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 36),
 
                     // ── Email Field ───────────────────────────────────────
                     TextFormField(
@@ -312,6 +318,72 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                         }
                         return null;
                       },
+                    ),
+                    const SizedBox(height: 14),
+
+                    // ── Username Field (optional) ─────────────────────────
+                    TextFormField(
+                      controller: _usernameController,
+                      decoration: InputDecoration(
+                        hintText: 'Username (optional)',
+                        hintStyle: GoogleFonts.poppins(color: Colors.grey),
+                        filled: true,
+                        fillColor: const Color(0xFFF1F1F1),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30),
+                          borderSide: BorderSide.none,
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 24,
+                          vertical: 16,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+
+                    // ── Address Field (optional) ──────────────────────────
+                    TextFormField(
+                      controller: _addressController,
+                      decoration: InputDecoration(
+                        hintText: 'Address (optional)',
+                        hintStyle: GoogleFonts.poppins(color: Colors.grey),
+                        filled: true,
+                        fillColor: const Color(0xFFF1F1F1),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30),
+                          borderSide: BorderSide.none,
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 24,
+                          vertical: 16,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+
+                    // ── Country Picker (optional) ─────────────────────────
+                    GestureDetector(
+                      onTap: _pickCountry,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFF1F1F1),
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        child: Row(
+                          children: [
+                            Text(
+                              _selectedCountry.isEmpty ? 'Country (optional)' : _selectedCountry,
+                              style: GoogleFonts.poppins(
+                                color: _selectedCountry.isEmpty ? Colors.grey : Colors.black87,
+                                fontSize: 16,
+                              ),
+                            ),
+                            const Spacer(),
+                            const Icon(Icons.arrow_drop_down, color: Colors.grey),
+                          ],
+                        ),
+                      ),
                     ),
                     const SizedBox(height: 36),
 
@@ -435,42 +507,3 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   }
 }
 
-class _DashedCirclePainter extends CustomPainter {
-  final Color color;
-
-  const _DashedCirclePainter({required this.color});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = color
-      ..strokeWidth = 2
-      ..style = PaintingStyle.stroke;
-
-    final center = Offset(size.width / 2, size.height / 2);
-    final radius = (size.width / 2) - 2;
-    final circumference = 2 * math.pi * radius;
-
-    const dashLength = 8.0;
-    const gapLength = 5.0;
-    final totalDash = dashLength + gapLength;
-    final dashCount = (circumference / totalDash).floor();
-    final dashAngle = (dashLength / circumference) * 2 * math.pi;
-    final gapAngle = (gapLength / circumference) * 2 * math.pi;
-
-    double startAngle = -math.pi / 2;
-    for (int i = 0; i < dashCount; i++) {
-      canvas.drawArc(
-        Rect.fromCircle(center: center, radius: radius),
-        startAngle,
-        dashAngle,
-        false,
-        paint,
-      );
-      startAngle += dashAngle + gapAngle;
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}

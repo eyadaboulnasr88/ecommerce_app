@@ -116,19 +116,21 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                   // Rating
                   Row(
                     children: [
-                      ...List.generate(5, (index) {
-                        return Icon(
-                          index <
-                                  (widget.product['rating'] ?? 4.5).floor()
-                              ? Icons.star
-                              : Icons.star_border,
-                          size: 18,
-                          color: Colors.amber,
-                        );
+                      ...List.generate(5, (i) {
+                        final double rating = ((widget.product['rating'] ?? 4.5) as num).toDouble();
+                        final int full = rating.floor();
+                        final bool half = (rating - full) >= 0.5;
+                        final IconData icon = i < full
+                            ? Icons.star
+                            : (i == full && half ? Icons.star_half : Icons.star_border);
+                        final Color color = i < full || (i == full && half)
+                            ? Colors.amber
+                            : Colors.grey[400]!;
+                        return Icon(icon, size: 18, color: color);
                       }),
                       const SizedBox(width: 8),
                       Text(
-                        '(${widget.product['rating']?.toString() ?? '4.5'})',
+                        '(${((widget.product['rating'] ?? 4.5) as num).toStringAsFixed(1)})',
                         style: GoogleFonts.poppins(
                           fontSize: 14,
                           color: AppColors.textSecondary,
@@ -154,7 +156,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 12, vertical: 6),
                     decoration: BoxDecoration(
-                      color: AppColors.primary.withOpacity(0.1),
+                      color: AppColors.primary.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Text(
