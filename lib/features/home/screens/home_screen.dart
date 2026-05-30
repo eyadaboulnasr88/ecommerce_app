@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -30,6 +31,35 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final CartService _cartService = CartService();
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  Set<String> _favoriteIds = {};
+  StreamSubscription? _favoritesSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    final userId = FirebaseAuth.instance.currentUser?.uid;
+    if (userId != null) {
+      _favoritesSubscription = FirebaseFirestore.instance
+          .collection('favorites')
+          .where('userId', isEqualTo: userId)
+          .snapshots()
+          .listen((snapshot) {
+        if (mounted) {
+          setState(() {
+            _favoriteIds = snapshot.docs
+                .map((d) => (d.data()['productId'] ?? '') as String)
+                .toSet();
+          });
+        }
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _favoritesSubscription?.cancel();
+    super.dispose();
+  }
 
   double _parsePrice(dynamic price) {
     if (price == null) return 0.0;
@@ -98,9 +128,12 @@ class _HomeScreenState extends State<HomeScreen> {
         const SnackBar(content: Text('Added to favorites!')),
       );
     } else {
+      for (final doc in existing.docs) {
+        await doc.reference.delete();
+      }
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Already in favorites!')),
+        const SnackBar(content: Text('Removed from favorites!')),
       );
     }
   }
@@ -520,7 +553,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                             ],
                                           ),
                                           child: Icon(
-                                            Icons.favorite_border,
+                                            _favoriteIds.contains(products[index].id)
+                                                ? Icons.favorite
+                                                : Icons.favorite_border,
                                             size: 16,
                                             color: AppColors.accentPink,
                                           ),
