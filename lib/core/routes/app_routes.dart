@@ -11,7 +11,6 @@ import 'package:ecommerce_app/features/auth/screens/sign_in_screen.dart';
 import 'package:ecommerce_app/features/auth/screens/create_account_screen.dart';
 import 'package:ecommerce_app/features/search/ui/search_view.dart';
 import 'package:ecommerce_app/features/help_support_view.dart';
-import 'package:ecommerce_app/features/product/screens/product_details_screen.dart';
 
 class AppRoutes {
   static const String home = '/home';

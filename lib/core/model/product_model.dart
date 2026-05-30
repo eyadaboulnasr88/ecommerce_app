@@ -25,4 +25,12 @@ class ProductModel {
       price: (json['price'] as num?)?.toDouble() ?? 0.0,
     );
   }
+
+  Map<String, dynamic> toMap() => {
+        'id': id,
+        'title': title,
+        'description': description,
+        'image': image,
+        'price': price,
+      };
 }
