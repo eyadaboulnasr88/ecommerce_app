@@ -17,10 +17,11 @@ class SearchCubit extends Cubit<SearchState> {
     emit(SearchLoading());
 
     try {
+      final q = query[0].toUpperCase() + query.substring(1);
       final snapshot = await _firestore
-          .collection('Products')
-          .where('title', isGreaterThanOrEqualTo: query)
-          .where('title', isLessThanOrEqualTo: '$query\uf8ff')
+          .collection('products')
+          .where('title', isGreaterThanOrEqualTo: q)
+          .where('title', isLessThanOrEqualTo: '$q\uf8ff')
           .get();
 
       final results = snapshot.docs
