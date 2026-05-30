@@ -340,6 +340,17 @@ class SettingsMenu extends StatelessWidget {
               'country': userLocation,
               'subscription': userSubscription,
             }),
+            customOnTap: () => _updateEmail(
+              context,
+              (value) => onDataUpdated({
+                'name': userName,
+                'email': value,
+                'username': userUsername,
+                'phone': userPhone,
+                'country': userLocation,
+                'subscription': userSubscription,
+              }),
+            ),
           ),
           const Divider(height: 1, indent: 56, color: AppColors.border),
           _buildMenuItem(
@@ -565,6 +576,69 @@ class SettingsMenu extends StatelessWidget {
             Icon(Icons.chevron_right, color: AppColors.textLight, size: 22),
           ],
         ),
+      ),
+    );
+  }
+
+  void _updateEmail(BuildContext context, Function(String) onSave) {
+    final controller = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('Update Email', style: GoogleFonts.poppins(color: AppColors.primary)),
+        content: TextField(
+          controller: controller,
+          keyboardType: TextInputType.emailAddress,
+          decoration: InputDecoration(
+            hintText: 'New email address',
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+          ),
+        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: Text('Cancel', style: TextStyle(color: AppColors.textLight)),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              final newEmail = controller.text.trim();
+              if (newEmail.isEmpty || !newEmail.contains('@')) return;
+              final user = FirebaseAuth.instance.currentUser;
+              if (user == null) return;
+              Navigator.pop(ctx);
+              try {
+                await user.verifyBeforeUpdateEmail(newEmail);
+                onSave(newEmail);
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                          'Verification sent to $newEmail — confirm to apply'),
+                    ),
+                  );
+                }
+              } on FirebaseAuthException catch (e) {
+                debugPrint('verifyBeforeUpdateEmail FirebaseAuthException: ${e.code} — ${e.message}');
+                if (!context.mounted) return;
+                final msg = e.code == 'requires-recent-login'
+                    ? 'Sign out and back in, then try again.'
+                    : e.message ?? 'Failed to update email.';
+                ScaffoldMessenger.of(context)
+                    .showSnackBar(SnackBar(content: Text(msg)));
+              } catch (e) {
+                debugPrint('verifyBeforeUpdateEmail unexpected error: $e');
+                if (!context.mounted) return;
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Error: $e')),
+                );
+              }
+            },
+            style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
+            child: const Text('Send Verification',
+                style: TextStyle(color: Colors.white)),
+          ),
+        ],
       ),
     );
   }
