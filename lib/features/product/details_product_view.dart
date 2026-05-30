@@ -54,9 +54,9 @@ class DetailsProductView extends StatelessWidget {
     await FirebaseFirestore.instance.collection('favorites').add({
       'userId': user.uid,
       'productId': product.id,
-      'title': product.title,
+      'name': product.title,
       'price': product.price,
-      'image': product.image,
+      'imageUrl': product.image,
       'description': product.description,
       'createdAt': FieldValue.serverTimestamp(),
     });

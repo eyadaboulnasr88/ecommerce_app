@@ -608,7 +608,7 @@ class SettingsMenu extends StatelessWidget {
     final confirmPass = TextEditingController();
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (dialogContext) => AlertDialog(
         title: const Text('Change Password'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
@@ -635,24 +635,35 @@ class SettingsMenu extends StatelessWidget {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.pop(dialogContext),
             child: const Text('Cancel'),
           ),
           ElevatedButton(
-            onPressed: () {
-              if (newPass.text == confirmPass.text && newPass.text.isNotEmpty) {
-                Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Password changed!')),
-                );
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
+            onPressed: () async {
+              if (newPass.text.isEmpty || newPass.text != confirmPass.text) {
+                ScaffoldMessenger.of(dialogContext).showSnackBar(
                   const SnackBar(content: Text('Passwords do not match!')),
                 );
+                return;
+              }
+              Navigator.pop(dialogContext);
+              // Capture messenger before the await so context is never used across async gaps
+              final messenger = ScaffoldMessenger.of(context);
+              try {
+                await FirebaseAuth.instance.currentUser
+                    ?.updatePassword(newPass.text);
+                messenger.showSnackBar(
+                  const SnackBar(content: Text('Password updated successfully!')),
+                );
+              } on FirebaseAuthException catch (e) {
+                final message = e.code == 'requires-recent-login'
+                    ? 'Please sign out and sign back in, then try again.'
+                    : 'Failed to update password. Please try again.';
+                messenger.showSnackBar(SnackBar(content: Text(message)));
               }
             },
             style: ElevatedButton.styleFrom(backgroundColor: ProfileColors.primary),
-            child: const Text('Update'),
+            child: const Text('Update', style: TextStyle(color: Colors.white)),
           ),
         ],
       ),

@@ -1,11 +1,69 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:ecommerce_app/features/home/screens/home_screen.dart';
+import 'package:ecommerce_app/services/cart_service.dart';
 
-class ProductDetailsScreen extends StatelessWidget {
+class ProductDetailsScreen extends StatefulWidget {
   final Map<String, dynamic> product;
 
   const ProductDetailsScreen({super.key, required this.product});
+
+  @override
+  State<ProductDetailsScreen> createState() => _ProductDetailsScreenState();
+}
+
+class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
+  final CartService _cartService = CartService();
+  bool _isAddingToCart = false;
+
+  double _parsePrice(dynamic price) {
+    if (price == null) return 0.0;
+    if (price is double) return price;
+    if (price is int) return price.toDouble();
+    return double.tryParse(price.toString()) ?? 0.0;
+  }
+
+  Future<void> _addToCart() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please sign in to add items to cart')),
+      );
+      return;
+    }
+
+    setState(() => _isAddingToCart = true);
+
+    try {
+      await _cartService.addToCart(
+        productId: widget.product['id']?.toString() ??
+            widget.product['title']?.toString() ??
+            '',
+        name: widget.product['title'] ?? widget.product['name'] ?? 'Product',
+        price: _parsePrice(widget.product['price']),
+        imageUrl: widget.product['image'] ?? widget.product['imageUrl'] ?? '',
+      );
+
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+              '${widget.product['title'] ?? 'Item'} added to cart!'),
+          backgroundColor: AppColors.primary,
+        ),
+      );
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Failed to add to cart. Please try again.'),
+        ),
+      );
+    } finally {
+      if (mounted) setState(() => _isAddingToCart = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +71,7 @@ class ProductDetailsScreen extends StatelessWidget {
       backgroundColor: AppColors.background,
       appBar: AppBar(
         title: Text(
-          product['title'] ?? 'Product Details',
+          widget.product['title'] ?? 'Product Details',
           style: GoogleFonts.poppins(fontWeight: FontWeight.w600, fontSize: 18),
         ),
         backgroundColor: Colors.white,
@@ -30,14 +88,15 @@ class ProductDetailsScreen extends StatelessWidget {
               height: 300,
               color: Colors.grey[100],
               child: Image.network(
-                product['image'] ?? '',
+                widget.product['image'] ?? '',
                 fit: BoxFit.contain,
                 errorBuilder: (context, error, stackTrace) => Center(
-                  child: Icon(Icons.broken_image, size: 80, color: Colors.grey[400]),
+                  child: Icon(Icons.broken_image,
+                      size: 80, color: Colors.grey[400]),
                 ),
               ),
             ),
-            
+
             Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
@@ -45,7 +104,7 @@ class ProductDetailsScreen extends StatelessWidget {
                 children: [
                   // Product Name
                   Text(
-                    product['title'] ?? 'Product Name',
+                    widget.product['title'] ?? 'Product Name',
                     style: GoogleFonts.poppins(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
@@ -53,13 +112,14 @@ class ProductDetailsScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  
+
                   // Rating
                   Row(
                     children: [
                       ...List.generate(5, (index) {
                         return Icon(
-                          index < (product['rating'] ?? 4.5).floor()
+                          index <
+                                  (widget.product['rating'] ?? 4.5).floor()
                               ? Icons.star
                               : Icons.star_border,
                           size: 18,
@@ -68,7 +128,7 @@ class ProductDetailsScreen extends StatelessWidget {
                       }),
                       const SizedBox(width: 8),
                       Text(
-                        '(${product['rating']?.toString() ?? '4.5'})',
+                        '(${widget.product['rating']?.toString() ?? '4.5'})',
                         style: GoogleFonts.poppins(
                           fontSize: 14,
                           color: AppColors.textSecondary,
@@ -77,10 +137,10 @@ class ProductDetailsScreen extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 12),
-                  
+
                   // Price
                   Text(
-                    '\$${product['price']?.toStringAsFixed(2) ?? '0.00'}',
+                    '\$${_parsePrice(widget.product['price']).toStringAsFixed(2)}',
                     style: GoogleFonts.poppins(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
@@ -88,16 +148,17 @@ class ProductDetailsScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  
+
                   // Category
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 12, vertical: 6),
                     decoration: BoxDecoration(
                       color: AppColors.primary.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Text(
-                      product['category'] ?? 'Uncategorized',
+                      widget.product['category'] ?? 'Uncategorized',
                       style: GoogleFonts.poppins(
                         fontSize: 12,
                         color: AppColors.primary,
@@ -105,7 +166,7 @@ class ProductDetailsScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 24),
-                  
+
                   // Description
                   Text(
                     'Description',
@@ -117,7 +178,8 @@ class ProductDetailsScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    product['description'] ?? 'No description available for this product.',
+                    widget.product['description'] ??
+                        'No description available for this product.',
                     style: GoogleFonts.poppins(
                       fontSize: 14,
                       color: AppColors.textSecondary,
@@ -125,32 +187,37 @@ class ProductDetailsScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 30),
-                  
+
                   // Add to Cart Button
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Added to cart!')),
-                        );
-                        Navigator.pop(context);
-                      },
+                      onPressed: _isAddingToCart ? null : _addToCart,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.primary,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        padding:
+                            const EdgeInsets.symmetric(vertical: 16),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                      child: Text(
-                        'Add to Cart',
-                        style: GoogleFonts.poppins(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
-                        ),
-                      ),
+                      child: _isAddingToCart
+                          ? const SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: Colors.white,
+                              ),
+                            )
+                          : Text(
+                              'Add to Cart',
+                              style: GoogleFonts.poppins(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                              ),
+                            ),
                     ),
                   ),
                 ],

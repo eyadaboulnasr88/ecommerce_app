@@ -58,11 +58,21 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     });
 
     try {
+      // Pre-fill name from Auth as a baseline (works for all users including Google sign-in)
+      final authUser = _auth.currentUser;
+      if (authUser?.displayName?.isNotEmpty == true) {
+        _fullNameController.text = authUser!.displayName!;
+      }
+
       final userDoc = await _firestore.collection('users').doc(userId).get();
       if (userDoc.exists) {
         final data = userDoc.data();
-        _fullNameController.text = data?['name'] ?? '';
-        _phoneController.text = data?['phone'] ?? '';
+        if ((data?['name'] as String? ?? '').isNotEmpty) {
+          _fullNameController.text = data!['name'];
+        }
+        if ((data?['phone'] as String? ?? '').isNotEmpty) {
+          _phoneController.text = data!['phone'];
+        }
         _addressController.text = data?['address'] ?? '';
         _cityController.text = data?['city'] ?? '';
       }
