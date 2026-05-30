@@ -384,7 +384,7 @@ class _HomeScreenState extends State<HomeScreen> {
             // Products Grid
             Expanded(
               child: StreamBuilder<QuerySnapshot>(
-                stream: FirebaseFirestore.instance.collection('Products').snapshots(),
+                stream: FirebaseFirestore.instance.collection('products').snapshots(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CircularProgressIndicator());
