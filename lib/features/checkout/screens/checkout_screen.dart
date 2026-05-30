@@ -178,9 +178,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       await orderRef.update({'orderId': orderId});
 
       // Clear cart
+      final batch = _firestore.batch();
       for (var doc in cartSnapshot.docs) {
-        await doc.reference.delete();
+        batch.delete(doc.reference);
       }
+      await batch.commit();
 
       // Navigate to confirmation screen
       if (mounted) {

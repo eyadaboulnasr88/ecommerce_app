@@ -44,6 +44,7 @@ class _CartScreenState extends State<CartScreen> {
 
   Future<void> _removeFromCart(String cartId) async {
     await _firestore.collection('carts').doc(cartId).delete();
+    if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Item removed from cart')),
     );
@@ -55,10 +56,13 @@ class _CartScreenState extends State<CartScreen> {
         .where('userId', isEqualTo: userId)
         .get();
 
+    final batch = _firestore.batch();
     for (var doc in cartItems.docs) {
-      await doc.reference.delete();
+      batch.delete(doc.reference);
     }
+    await batch.commit();
 
+    if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Cart cleared successfully')),
     );

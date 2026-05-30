@@ -80,7 +80,7 @@ class _SearchViewBodyState extends State<SearchViewBody> {
 
                     title: Text(product.title),
 
-                    subtitle: Text('\$${product.price.toString()}'),
+                    subtitle: Text('\$${product.price.toStringAsFixed(2)}'),
                   ),
                 );
               },

@@ -688,10 +688,9 @@ class _HomeScreenState extends State<HomeScreen> {
         unselectedItemColor: AppColors.textSecondary,
         currentIndex: _selectedNavIndex,
         onTap: (index) {
+          if (index == 0) return;
           setState(() => _selectedNavIndex = index);
           switch (index) {
-            case 0:
-              break;
             case 1:
               Navigator.pushNamed(context, AppRoutes.search);
               break;
@@ -705,6 +704,7 @@ class _HomeScreenState extends State<HomeScreen> {
               Navigator.pushNamed(context, AppRoutes.profile);
               break;
           }
+          setState(() => _selectedNavIndex = 0);
         },
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home_outlined), activeIcon: Icon(Icons.home), label: 'Home'),
