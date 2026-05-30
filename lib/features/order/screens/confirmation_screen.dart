@@ -59,7 +59,9 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
           return;
         }
       }
-    } catch (_) {}
+    } catch (e) {
+      debugPrint('Failed to load order details: $e');
+    }
 
     if (mounted) {
       setState(() {

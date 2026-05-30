@@ -50,7 +50,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
           userSubscription = data['subscription'] ?? '';
         });
       }
-    } catch (_) {}
+    } catch (e) {
+      debugPrint('Failed to load profile: $e');
+    }
   }
 
   Future<void> _saveToFirebase() async {
@@ -72,7 +74,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
         'subscription': userSubscription,
         'updatedAt': FieldValue.serverTimestamp(),
       }, SetOptions(merge: true));
-    } catch (_) {}
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to save profile: $e')),
+        );
+      }
+    }
   }
 
   void _updateUserData(Map<String, dynamic> data) {
