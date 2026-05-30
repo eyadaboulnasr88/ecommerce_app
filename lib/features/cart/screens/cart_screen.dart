@@ -56,9 +56,11 @@ class _CartScreenState extends State<CartScreen> {
         .where('userId', isEqualTo: userId)
         .get();
 
+    final batch = _firestore.batch();
     for (var doc in cartItems.docs) {
-      await doc.reference.delete();
+      batch.delete(doc.reference);
     }
+    await batch.commit();
 
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(

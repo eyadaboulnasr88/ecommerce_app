@@ -85,9 +85,11 @@ class CartService {
         .where('userId', isEqualTo: userId)
         .get();
 
+    final batch = _firestore.batch();
     for (var doc in cartItems.docs) {
-      await doc.reference.delete();
+      batch.delete(doc.reference);
     }
+    await batch.commit();
   }
 
   Future<int> getCartItemCount() async {
