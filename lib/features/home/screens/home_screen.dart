@@ -6,6 +6,7 @@ import 'package:ecommerce_app/core/routes/app_routes.dart';
 import 'package:ecommerce_app/services/cart_service.dart';
 import 'package:ecommerce_app/features/product/screens/product_details_screen.dart';
 import 'package:ecommerce_app/core/constants/app_colors.dart';
+import 'package:ecommerce_app/core/widgets/app_bottom_nav_bar.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -19,7 +20,6 @@ class _HomeScreenState extends State<HomeScreen> {
   double minPrice = 0;
   double maxPrice = 1000;
   bool showFilters = false;
-  int _selectedNavIndex = 0;
 
   final List<String> categories = [
     'All',
@@ -671,39 +671,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        backgroundColor: Colors.white,
-        selectedItemColor: AppColors.primary,
-        unselectedItemColor: AppColors.textSecondary,
-        currentIndex: _selectedNavIndex,
-        onTap: (index) {
-          if (index == 0) return;
-          setState(() => _selectedNavIndex = index);
-          switch (index) {
-            case 1:
-              Navigator.pushNamed(context, AppRoutes.search);
-              break;
-            case 2:
-              Navigator.pushNamed(context, AppRoutes.favorite);
-              break;
-            case 3:
-              Navigator.pushNamed(context, AppRoutes.cart);
-              break;
-            case 4:
-              Navigator.pushNamed(context, AppRoutes.profile);
-              break;
-          }
-          setState(() => _selectedNavIndex = 0);
-        },
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home_outlined), activeIcon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.search_outlined), activeIcon: Icon(Icons.search), label: 'Search'),
-          BottomNavigationBarItem(icon: Icon(Icons.favorite_border), activeIcon: Icon(Icons.favorite), label: 'Favorites'),
-          BottomNavigationBarItem(icon: Icon(Icons.shopping_cart_outlined), activeIcon: Icon(Icons.shopping_cart), label: 'Cart'),
-          BottomNavigationBarItem(icon: Icon(Icons.person_outline), activeIcon: Icon(Icons.person), label: 'Profile'),
-        ],
-      ),
+      bottomNavigationBar: const AppBottomNavBar(currentIndex: 0),
     );
   }
 }

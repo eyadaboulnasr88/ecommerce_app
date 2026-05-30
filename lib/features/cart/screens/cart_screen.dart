@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:ecommerce_app/core/routes/app_routes.dart';
 import 'package:ecommerce_app/core/constants/app_colors.dart';
+import 'package:ecommerce_app/core/widgets/app_bottom_nav_bar.dart';
 
 class CartScreen extends StatefulWidget {
   const CartScreen({super.key});
@@ -155,7 +156,7 @@ class _CartScreenState extends State<CartScreen> {
           );
         },
       ),
-      bottomNavigationBar: const CartBottomNavBar(),
+      bottomNavigationBar: const AppBottomNavBar(currentIndex: 3),
     );
   }
 
@@ -401,45 +402,6 @@ class _CartScreenState extends State<CartScreen> {
           ),
         ],
       ),
-    );
-  }
-}
-
-class CartBottomNavBar extends StatelessWidget {
-  const CartBottomNavBar({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return BottomNavigationBar(
-      type: BottomNavigationBarType.fixed,
-      selectedItemColor: AppColors.primary,
-      unselectedItemColor: AppColors.textSecondary,
-      currentIndex: 3,
-      onTap: (index) {
-        switch (index) {
-          case 0:
-            Navigator.pushReplacementNamed(context, AppRoutes.home);
-            break;
-          case 1:
-            Navigator.pushNamed(context, AppRoutes.search);
-            break;
-          case 2:
-            Navigator.pushNamed(context, AppRoutes.favorite);
-            break;
-          case 3:
-            break;
-          case 4:
-            Navigator.pushNamed(context, AppRoutes.profile);
-            break;
-        }
-      },
-      items: const [
-        BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-        BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
-        BottomNavigationBarItem(icon: Icon(Icons.favorite_border), label: 'Favorite'),
-        BottomNavigationBarItem(icon: Icon(Icons.shopping_cart), label: 'Cart'),
-        BottomNavigationBarItem(icon: Icon(Icons.person_outline), label: 'Profile'),
-      ],
     );
   }
 }

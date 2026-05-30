@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce_app/core/routes/app_routes.dart';
 import 'package:ecommerce_app/core/constants/app_colors.dart';
+import 'package:ecommerce_app/core/widgets/app_bottom_nav_bar.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -138,7 +139,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ],
         ),
       ),
-      bottomNavigationBar: const ProfileBottomNavBar(),
+      bottomNavigationBar: const AppBottomNavBar(currentIndex: 4),
     );
   }
 
@@ -743,39 +744,3 @@ class LogoutButton extends StatelessWidget {
   }
 }
 
-class ProfileBottomNavBar extends StatelessWidget {
-  const ProfileBottomNavBar({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return BottomNavigationBar(
-      type: BottomNavigationBarType.fixed,
-      selectedItemColor: AppColors.primary,
-      unselectedItemColor: AppColors.textSecondary,
-      currentIndex: 4,
-      onTap: (index) {
-        switch (index) {
-          case 0:
-            Navigator.pushReplacementNamed(context, AppRoutes.home);
-            break;
-          case 1:
-            Navigator.pushNamed(context, AppRoutes.search);
-            break;
-          case 2:
-            Navigator.pushNamed(context, AppRoutes.favorite);
-            break;
-          case 3:
-            Navigator.pushNamed(context, AppRoutes.cart);
-            break;
-        }
-      },
-      items: const [
-        BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-        BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
-        BottomNavigationBarItem(icon: Icon(Icons.favorite_border), label: 'Favorite'),
-        BottomNavigationBarItem(icon: Icon(Icons.shopping_cart), label: 'Cart'),
-        BottomNavigationBarItem(icon: Icon(Icons.person_outline), label: 'Profile'),
-      ],
-    );
-  }
-}
