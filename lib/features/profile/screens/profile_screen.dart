@@ -22,6 +22,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String userLocation = '';
   String userSubscription = '';
 
+  final _editNameController = TextEditingController();
+  final _editUsernameController = TextEditingController();
+  final _editPhoneController = TextEditingController();
+
+  @override
+  void dispose() {
+    _editNameController.dispose();
+    _editUsernameController.dispose();
+    _editPhoneController.dispose();
+    super.dispose();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -145,9 +157,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _showEditProfileDialog() {
-    final TextEditingController nameController = TextEditingController(text: userName);
-    final TextEditingController usernameController = TextEditingController(text: userUsername.replaceAll('@', ''));
-    final TextEditingController phoneController = TextEditingController(text: userPhone);
+    _editNameController.text = userName;
+    _editUsernameController.text = userUsername.replaceAll('@', '');
+    _editPhoneController.text = userPhone;
 
     showDialog(
       context: context,
@@ -164,11 +176,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              _buildTextField(controller: nameController, label: 'Full Name', icon: Icons.person_outline),
+              _buildTextField(controller: _editNameController, label: 'Full Name', icon: Icons.person_outline),
               const SizedBox(height: 12),
-              _buildTextField(controller: usernameController, label: 'Username', icon: Icons.person_outline),
+              _buildTextField(controller: _editUsernameController, label: 'Username', icon: Icons.person_outline),
               const SizedBox(height: 12),
-              _buildTextField(controller: phoneController, label: 'Phone Number', icon: Icons.phone_outlined),
+              _buildTextField(controller: _editPhoneController, label: 'Phone Number', icon: Icons.phone_outlined),
             ],
           ),
         ),
@@ -181,11 +193,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ElevatedButton(
             onPressed: () {
               setState(() {
-                userName = nameController.text;
-                userUsername = usernameController.text.startsWith('@')
-                    ? usernameController.text
-                    : '@${usernameController.text}';
-                userPhone = phoneController.text;
+                userName = _editNameController.text;
+                userUsername = _editUsernameController.text.startsWith('@')
+                    ? _editUsernameController.text
+                    : '@${_editUsernameController.text}';
+                userPhone = _editPhoneController.text;
               });
               _saveToFirebase();
               Navigator.pop(context);
@@ -577,65 +589,9 @@ class SettingsMenu extends StatelessWidget {
   }
 
   void _updateEmail(BuildContext context, Function(String) onSave) {
-    final controller = TextEditingController();
     showDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text('Update Email', style: GoogleFonts.poppins(color: AppColors.primary)),
-        content: TextField(
-          controller: controller,
-          keyboardType: TextInputType.emailAddress,
-          decoration: InputDecoration(
-            hintText: 'New email address',
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-          ),
-        ),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: Text('Cancel', style: TextStyle(color: AppColors.textLight)),
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              final newEmail = controller.text.trim();
-              if (newEmail.isEmpty || !newEmail.contains('@')) return;
-              final user = FirebaseAuth.instance.currentUser;
-              if (user == null) return;
-              Navigator.pop(ctx);
-              try {
-                await user.verifyBeforeUpdateEmail(newEmail);
-                onSave(newEmail);
-                if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                          'Verification sent to $newEmail — confirm to apply'),
-                    ),
-                  );
-                }
-              } on FirebaseAuthException catch (e) {
-                debugPrint('verifyBeforeUpdateEmail FirebaseAuthException: ${e.code} — ${e.message}');
-                if (!context.mounted) return;
-                final msg = e.code == 'requires-recent-login'
-                    ? 'Sign out and back in, then try again.'
-                    : e.message ?? 'Failed to update email.';
-                ScaffoldMessenger.of(context)
-                    .showSnackBar(SnackBar(content: Text(msg)));
-              } catch (e) {
-                debugPrint('verifyBeforeUpdateEmail unexpected error: $e');
-                if (!context.mounted) return;
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Error: $e')),
-                );
-              }
-            },
-            style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
-            child: const Text('Send Verification',
-                style: TextStyle(color: Colors.white)),
-          ),
-        ],
-      ),
+      builder: (_) => _UpdateEmailDialog(onSave: onSave),
     );
   }
 
@@ -688,109 +644,20 @@ class SettingsMenu extends StatelessWidget {
     String currentValue,
     Function(String) onSave,
   ) {
-    final controller = TextEditingController(
-      text: currentValue == 'Not set' ? '' : currentValue,
-    );
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(
-          'Edit $fieldName',
-          style: GoogleFonts.poppins(color: AppColors.primary),
-        ),
-        content: TextField(
-          controller: controller,
-          decoration: InputDecoration(
-            hintText: 'Enter $fieldName',
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-          ),
-        ),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('Cancel', style: TextStyle(color: AppColors.textLight)),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              if (controller.text.isNotEmpty) onSave(controller.text);
-              Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('$fieldName updated!')),
-              );
-            },
-            style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
-            child: const Text('Save'),
-          ),
-        ],
+      builder: (_) => _EditFieldDialog(
+        fieldName: fieldName,
+        currentValue: currentValue,
+        onSave: onSave,
       ),
     );
   }
 
   void _changePassword(BuildContext context) {
-    final newPass = TextEditingController();
-    final confirmPass = TextEditingController();
     showDialog(
       context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: const Text('Change Password'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: newPass,
-              obscureText: true,
-              decoration: const InputDecoration(
-                hintText: 'New Password',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: confirmPass,
-              obscureText: true,
-              decoration: const InputDecoration(
-                hintText: 'Confirm Password',
-                border: OutlineInputBorder(),
-              ),
-            ),
-          ],
-        ),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext),
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              if (newPass.text.isEmpty || newPass.text != confirmPass.text) {
-                ScaffoldMessenger.of(dialogContext).showSnackBar(
-                  const SnackBar(content: Text('Passwords do not match!')),
-                );
-                return;
-              }
-              Navigator.pop(dialogContext);
-              // Capture messenger before the await so context is never used across async gaps
-              final messenger = ScaffoldMessenger.of(context);
-              try {
-                await FirebaseAuth.instance.currentUser
-                    ?.updatePassword(newPass.text);
-                messenger.showSnackBar(
-                  const SnackBar(content: Text('Password updated successfully!')),
-                );
-              } on FirebaseAuthException catch (e) {
-                final message = e.code == 'requires-recent-login'
-                    ? 'Please sign out and sign back in, then try again.'
-                    : 'Failed to update password. Please try again.';
-                messenger.showSnackBar(SnackBar(content: Text(message)));
-              }
-            },
-            style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
-            child: const Text('Update', style: TextStyle(color: Colors.white)),
-          ),
-        ],
-      ),
+      builder: (_) => const _ChangePasswordDialog(),
     );
   }
 }
@@ -866,6 +733,244 @@ class LogoutButton extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+// ── Dialog widgets — own their controllers so dispose() is guaranteed ──────────
+
+class _EditFieldDialog extends StatefulWidget {
+  final String fieldName;
+  final String currentValue;
+  final Function(String) onSave;
+
+  const _EditFieldDialog({
+    required this.fieldName,
+    required this.currentValue,
+    required this.onSave,
+  });
+
+  @override
+  State<_EditFieldDialog> createState() => _EditFieldDialogState();
+}
+
+class _EditFieldDialogState extends State<_EditFieldDialog> {
+  late final TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(
+      text: widget.currentValue == 'Not set' ? '' : widget.currentValue,
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text(
+        'Edit ${widget.fieldName}',
+        style: GoogleFonts.poppins(color: AppColors.primary),
+      ),
+      content: TextField(
+        controller: _controller,
+        decoration: InputDecoration(
+          hintText: 'Enter ${widget.fieldName}',
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+        ),
+      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text('Cancel', style: TextStyle(color: AppColors.textLight)),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            if (_controller.text.isNotEmpty) widget.onSave(_controller.text);
+            Navigator.pop(context);
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('${widget.fieldName} updated!')),
+            );
+          },
+          style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
+          child: const Text('Save'),
+        ),
+      ],
+    );
+  }
+}
+
+class _UpdateEmailDialog extends StatefulWidget {
+  final Function(String) onSave;
+
+  const _UpdateEmailDialog({required this.onSave});
+
+  @override
+  State<_UpdateEmailDialog> createState() => _UpdateEmailDialogState();
+}
+
+class _UpdateEmailDialogState extends State<_UpdateEmailDialog> {
+  late final TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text('Update Email', style: GoogleFonts.poppins(color: AppColors.primary)),
+      content: TextField(
+        controller: _controller,
+        keyboardType: TextInputType.emailAddress,
+        decoration: InputDecoration(
+          hintText: 'New email address',
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+        ),
+      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text('Cancel', style: TextStyle(color: AppColors.textLight)),
+        ),
+        ElevatedButton(
+          onPressed: () async {
+            final newEmail = _controller.text.trim();
+            if (newEmail.isEmpty || !newEmail.contains('@')) return;
+            final user = FirebaseAuth.instance.currentUser;
+            if (user == null) return;
+            Navigator.pop(context);
+            try {
+              await user.verifyBeforeUpdateEmail(newEmail);
+              widget.onSave(newEmail);
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Verification sent to $newEmail — confirm to apply'),
+                  ),
+                );
+              }
+            } on FirebaseAuthException catch (e) {
+              debugPrint('verifyBeforeUpdateEmail error: ${e.code}');
+              if (!context.mounted) return;
+              final msg = e.code == 'requires-recent-login'
+                  ? 'Sign out and back in, then try again.'
+                  : e.message ?? 'Failed to update email.';
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
+            } catch (e) {
+              if (!context.mounted) return;
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Error: $e')),
+              );
+            }
+          },
+          style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
+          child: const Text('Send Verification', style: TextStyle(color: Colors.white)),
+        ),
+      ],
+    );
+  }
+}
+
+class _ChangePasswordDialog extends StatefulWidget {
+  const _ChangePasswordDialog();
+
+  @override
+  State<_ChangePasswordDialog> createState() => _ChangePasswordDialogState();
+}
+
+class _ChangePasswordDialogState extends State<_ChangePasswordDialog> {
+  late final TextEditingController _newPass;
+  late final TextEditingController _confirmPass;
+
+  @override
+  void initState() {
+    super.initState();
+    _newPass = TextEditingController();
+    _confirmPass = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _newPass.dispose();
+    _confirmPass.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Change Password'),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TextField(
+            controller: _newPass,
+            obscureText: true,
+            decoration: const InputDecoration(
+              hintText: 'New Password',
+              border: OutlineInputBorder(),
+            ),
+          ),
+          const SizedBox(height: 12),
+          TextField(
+            controller: _confirmPass,
+            obscureText: true,
+            decoration: const InputDecoration(
+              hintText: 'Confirm Password',
+              border: OutlineInputBorder(),
+            ),
+          ),
+        ],
+      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('Cancel'),
+        ),
+        ElevatedButton(
+          onPressed: () async {
+            if (_newPass.text.isEmpty || _newPass.text != _confirmPass.text) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Passwords do not match!')),
+              );
+              return;
+            }
+            Navigator.pop(context);
+            final messenger = ScaffoldMessenger.of(context);
+            try {
+              await FirebaseAuth.instance.currentUser?.updatePassword(_newPass.text);
+              messenger.showSnackBar(
+                const SnackBar(content: Text('Password updated successfully!')),
+              );
+            } on FirebaseAuthException catch (e) {
+              final message = e.code == 'requires-recent-login'
+                  ? 'Please sign out and sign back in, then try again.'
+                  : 'Failed to update password. Please try again.';
+              messenger.showSnackBar(SnackBar(content: Text(message)));
+            }
+          },
+          style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
+          child: const Text('Update', style: TextStyle(color: Colors.white)),
+        ),
+      ],
     );
   }
 }
