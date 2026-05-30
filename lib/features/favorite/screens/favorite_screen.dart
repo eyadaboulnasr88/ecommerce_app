@@ -3,19 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:ecommerce_app/core/routes/app_routes.dart';
-
-class FavoriteColors {
-  static const Color primary = Color(0xFF1100FF);
-  static const Color primaryLight = Color(0xFF4436FF);
-  static const Color accentPink = Color(0xFFF43F5E);
-  static const Color background = Colors.white;
-  static const Color surface = Colors.white;
-  static const Color textPrimary = Color(0xFF1F2937);
-  static const Color textSecondary = Color(0xFF6B7280);
-  static const Color textLight = Color(0xFF9CA3AF);
-  static const Color border = Color(0xFFE5E7EB);
-  static const Color error = Color(0xFFEF4444);
-}
+import 'package:ecommerce_app/core/constants/app_colors.dart';
 
 class FavoriteScreen extends StatefulWidget {
   const FavoriteScreen({super.key});
@@ -83,7 +71,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
   Widget build(BuildContext context) {
     if (userId.isEmpty) {
       return Scaffold(
-        backgroundColor: FavoriteColors.background,
+        backgroundColor: AppColors.background,
         appBar: AppBar(
           title: Text('Favorites', style: GoogleFonts.poppins(fontWeight: FontWeight.w600, fontSize: 18)),
           centerTitle: true,
@@ -94,17 +82,17 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.favorite_border, size: 80, color: FavoriteColors.textLight),
+              Icon(Icons.favorite_border, size: 80, color: AppColors.textLight),
               const SizedBox(height: 16),
               Text(
                 'Please login to view your favorites',
-                style: GoogleFonts.poppins(fontSize: 16, color: FavoriteColors.textSecondary),
+                style: GoogleFonts.poppins(fontSize: 16, color: AppColors.textSecondary),
               ),
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () => Navigator.pushNamed(context, AppRoutes.signIn),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: FavoriteColors.primary,
+                  backgroundColor: AppColors.primary,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 ),
                 child: Text('Sign In', style: GoogleFonts.poppins(color: Colors.white)),
@@ -116,7 +104,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
     }
 
     return Scaffold(
-      backgroundColor: FavoriteColors.background,
+      backgroundColor: AppColors.background,
       appBar: AppBar(
         title: Text('Favorites', style: GoogleFonts.poppins(fontWeight: FontWeight.w600, fontSize: 18)),
         centerTitle: true,
@@ -175,22 +163,22 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.favorite_border, size: 80, color: FavoriteColors.textLight),
+          Icon(Icons.favorite_border, size: 80, color: AppColors.textLight),
           const SizedBox(height: 16),
           Text(
             'No favorites yet',
-            style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w600, color: FavoriteColors.textPrimary),
+            style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
           ),
           const SizedBox(height: 8),
           Text(
             'Add items to your favorites',
-            style: GoogleFonts.poppins(fontSize: 14, color: FavoriteColors.textSecondary),
+            style: GoogleFonts.poppins(fontSize: 14, color: AppColors.textSecondary),
           ),
           const SizedBox(height: 20),
           ElevatedButton(
             onPressed: () => Navigator.pushNamed(context, AppRoutes.home),
             style: ElevatedButton.styleFrom(
-              backgroundColor: FavoriteColors.primary,
+              backgroundColor: AppColors.primary,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             ),
             child: Text('Start Shopping', style: GoogleFonts.poppins(color: Colors.white)),
@@ -209,9 +197,9 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
   }) {
     return Container(
       decoration: BoxDecoration(
-        color: FavoriteColors.surface,
+        color: AppColors.surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: FavoriteColors.border),
+        border: Border.all(color: AppColors.border),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.03),
@@ -250,7 +238,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                         color: Colors.grey[200],
                         child: Center(
                           child: CircularProgressIndicator(
-                            color: FavoriteColors.primary,
+                            color: AppColors.primary,
                             value: loadingProgress.expectedTotalBytes != null
                                 ? loadingProgress.cumulativeBytesLoaded /
                                     loadingProgress.expectedTotalBytes!
@@ -291,7 +279,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                     child: Icon(
                       Icons.favorite,
                       size: 18,
-                      color: FavoriteColors.accentPink,
+                      color: AppColors.accentPink,
                     ),
                   ),
                 ),
@@ -309,7 +297,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                   style: GoogleFonts.poppins(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
-                    color: FavoriteColors.textPrimary,
+                    color: AppColors.textPrimary,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -320,7 +308,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                   style: GoogleFonts.poppins(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
-                    color: FavoriteColors.primary,
+                    color: AppColors.primary,
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -337,7 +325,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                       });
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: FavoriteColors.primary,
+                      backgroundColor: AppColors.primary,
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
@@ -369,8 +357,8 @@ class FavoriteBottomNavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return BottomNavigationBar(
       type: BottomNavigationBarType.fixed,
-      selectedItemColor: FavoriteColors.primary,
-      unselectedItemColor: FavoriteColors.textSecondary,
+      selectedItemColor: AppColors.primary,
+      unselectedItemColor: AppColors.textSecondary,
       currentIndex: 2,
       onTap: (index) {
         switch (index) {
