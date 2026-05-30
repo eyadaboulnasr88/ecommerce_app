@@ -24,7 +24,6 @@ class AppRoutes {
   static const String confirmation = '/confirmation';
   static const String helpSupport = '/help-support';
   static const String welcome = '/welcome';
-  static const String productDetails = '/product-details';
 
   static Map<String, WidgetBuilder> routes = {
     welcome: (context) => const WelcomeScreen(),

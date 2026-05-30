@@ -37,6 +37,17 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     _loadUserData();
   }
 
+  @override
+  void dispose() {
+    _fullNameController.dispose();
+    _phoneController.dispose();
+    _addressController.dispose();
+    _cityController.dispose();
+    _postalCodeController.dispose();
+    _notesController.dispose();
+    super.dispose();
+  }
+
   Future<void> _loadUserData() async {
     if (userId.isEmpty) return;
 

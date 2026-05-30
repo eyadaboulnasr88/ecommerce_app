@@ -57,6 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
       quantity: 1,
     );
 
+    if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('Added to cart!'),
@@ -92,10 +93,12 @@ class _HomeScreenState extends State<HomeScreen> {
         'imageUrl': product['image'] ?? product['imageUrl'] ?? '',
         'createdAt': FieldValue.serverTimestamp(),
       });
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Added to favorites!')),
       );
     } else {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Already in favorites!')),
       );
@@ -171,7 +174,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     borderRadius: BorderRadius.circular(30),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
+                        color: Colors.black.withValues(alpha: 0.05),
                         blurRadius: 8,
                         offset: const Offset(0, 2),
                       ),
@@ -236,7 +239,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         shape: StadiumBorder(side: BorderSide(color: AppColors.border)),
                       ),
                     );
-                  }).toList(),
+                  }),
                 ],
               ),
             ),
@@ -254,7 +257,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     borderRadius: BorderRadius.circular(12),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
+                        color: Colors.black.withValues(alpha: 0.05),
                         blurRadius: 8,
                       ),
                     ],
@@ -472,7 +475,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             borderRadius: BorderRadius.circular(16),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.05),
+                                color: Colors.black.withValues(alpha: 0.05),
                                 blurRadius: 8,
                                 offset: const Offset(0, 2),
                               ),
@@ -519,7 +522,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                             shape: BoxShape.circle,
                                             boxShadow: [
                                               BoxShadow(
-                                                color: Colors.black.withOpacity(0.1),
+                                                color: Colors.black.withValues(alpha: 0.1),
                                                 blurRadius: 4,
                                               ),
                                             ],

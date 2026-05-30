@@ -120,6 +120,10 @@ class _CartScreenState extends State<CartScreen> {
             return Center(child: Text('Error: ${snapshot.error}'));
           }
 
+          if (!snapshot.hasData) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
           final cartItems = snapshot.data!.docs;
 
           if (cartItems.isEmpty) {
