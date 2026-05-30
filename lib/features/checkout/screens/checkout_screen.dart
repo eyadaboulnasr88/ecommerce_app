@@ -467,7 +467,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               .where('userId', isEqualTo: userId)
               .snapshots(),
           builder: (context, snapshot) {
-            if (!snapshot.hasData) {
+            if (!snapshot.hasData || _isProcessing) {
               return const Center(child: CircularProgressIndicator());
             }
 
