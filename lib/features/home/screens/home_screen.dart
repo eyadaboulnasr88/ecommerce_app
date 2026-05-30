@@ -557,7 +557,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                             borderRadius: BorderRadius.circular(4),
                                           ),
                                           child: Text(
-                                            '-${((productPrice - 50) / productPrice * 100).toInt()}%',
+                                            '-${(20 / (productPrice + 20) * 100).toInt()}%',
                                             style: const TextStyle(
                                               color: Colors.white,
                                               fontSize: 10,
