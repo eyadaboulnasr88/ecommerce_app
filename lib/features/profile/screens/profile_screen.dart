@@ -207,6 +207,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primary,
+              foregroundColor: Colors.white,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             ),
             child: const Text('Save'),
@@ -799,7 +800,7 @@ class _EditFieldDialogState extends State<_EditFieldDialog> {
               SnackBar(content: Text('${widget.fieldName} updated!')),
             );
           },
-          style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
+          style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary, foregroundColor: Colors.white),
           child: const Text('Save'),
         ),
       ],
