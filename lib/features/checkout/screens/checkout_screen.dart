@@ -26,7 +26,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   // Order notes
   final TextEditingController _notesController = TextEditingController();
 
-  bool _isLoading = false;
+  bool _isLoading = true;
   bool _isProcessing = false;
 
   String get userId => _auth.currentUser?.uid ?? '';

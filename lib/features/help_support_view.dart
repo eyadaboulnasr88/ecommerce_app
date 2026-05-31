@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-//import 'package:go_router/go_router.dart';
+import 'package:ecommerce_app/core/constants/app_colors.dart';
 
 class HelpSupportView extends StatelessWidget {
   const HelpSupportView({super.key});
@@ -36,7 +36,7 @@ class HelpSupportView extends StatelessWidget {
           children: [
             _buildCard(
               icon: Icons.support_agent_outlined,
-              iconBg: const Color(0xFF0D1C3C),
+              iconBg: AppColors.textPrimary,
               title: "We're Here to Help",
               subtitle:
                   "Need assistance with your order or have questions about our products? Our support team is ready to help you with any inquiries.",
@@ -48,7 +48,7 @@ class HelpSupportView extends StatelessWidget {
               subtitle:
                   'Call us directly for immediate assistance with your orders or questions.',
               extraText: '+20 123 456 7890',
-              extraTextColor: const Color(0xFF0D1C3C),
+              extraTextColor: AppColors.textPrimary,
             ),
             const SizedBox(height: 12),
             _buildCard(
@@ -57,7 +57,7 @@ class HelpSupportView extends StatelessWidget {
               subtitle:
                   "Send us an email and we'll get back to you within 24 hours.",
               extraText: 'support@mystore.com',
-              extraTextColor: const Color(0xFF0D1C3C),
+              extraTextColor: AppColors.textPrimary,
             ),
             const SizedBox(height: 12),
             _buildCard(
@@ -75,7 +75,7 @@ class HelpSupportView extends StatelessWidget {
     required IconData icon,
     required String title,
     required String subtitle,
-    Color iconBg = const Color(0xFF0D1C3C),
+    Color iconBg = AppColors.textPrimary,
     String? extraText,
     Color? extraTextColor,
   }) {

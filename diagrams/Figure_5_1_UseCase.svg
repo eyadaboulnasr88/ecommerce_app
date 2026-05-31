@@ -1,0 +1,119 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 720" font-family="Arial, sans-serif">
+  <style>
+    .title { font-size: 18px; font-weight: bold; fill: #1F3864; }
+    .actor-label { font-size: 14px; font-weight: 600; fill: #1F2937; }
+    .uc-label { font-size: 12px; fill: #1F2937; }
+    .system-label { font-size: 14px; font-weight: 700; fill: #1F3864; }
+    .uc { fill: #EAF1FB; stroke: #1F3864; stroke-width: 1.5; }
+    .actor { fill: none; stroke: #1F2937; stroke-width: 1.8; }
+    .line { stroke: #555; stroke-width: 1.2; fill: none; }
+    .boundary { fill: none; stroke: #1F3864; stroke-width: 2; stroke-dasharray: 0; }
+  </style>
+
+  <text x="500" y="32" class="title" text-anchor="middle">Figure 5.1 – System Use Case Diagram</text>
+
+  <!-- System boundary -->
+  <rect x="220" y="70" width="560" height="620" rx="12" class="boundary"/>
+  <text x="500" y="95" class="system-label" text-anchor="middle">Ecommerce Mobile Application</text>
+
+  <!-- Left actor: Customer -->
+  <g transform="translate(80,360)">
+    <circle cx="0" cy="-30" r="14" class="actor"/>
+    <line x1="0" y1="-16" x2="0" y2="20" class="actor"/>
+    <line x1="-20" y1="0" x2="20" y2="0" class="actor"/>
+    <line x1="0" y1="20" x2="-18" y2="50" class="actor"/>
+    <line x1="0" y1="20" x2="18" y2="50" class="actor"/>
+    <text x="0" y="75" class="actor-label" text-anchor="middle">Customer</text>
+  </g>
+
+  <!-- Right actor: Firebase Backend -->
+  <g transform="translate(920,360)">
+    <circle cx="0" cy="-30" r="14" class="actor"/>
+    <line x1="0" y1="-16" x2="0" y2="20" class="actor"/>
+    <line x1="-20" y1="0" x2="20" y2="0" class="actor"/>
+    <line x1="0" y1="20" x2="-18" y2="50" class="actor"/>
+    <line x1="0" y1="20" x2="18" y2="50" class="actor"/>
+    <text x="0" y="75" class="actor-label" text-anchor="middle">Firebase</text>
+    <text x="0" y="92" class="actor-label" text-anchor="middle">Backend</text>
+  </g>
+
+  <!-- Use cases (ellipses) -->
+  <g>
+    <ellipse cx="350" cy="140" rx="85" ry="22" class="uc"/>
+    <text x="350" y="145" class="uc-label" text-anchor="middle">Register Account</text>
+
+    <ellipse cx="350" cy="195" rx="85" ry="22" class="uc"/>
+    <text x="350" y="200" class="uc-label" text-anchor="middle">Sign In</text>
+
+    <ellipse cx="350" cy="250" rx="85" ry="22" class="uc"/>
+    <text x="350" y="255" class="uc-label" text-anchor="middle">Sign Out</text>
+
+    <ellipse cx="350" cy="305" rx="85" ry="22" class="uc"/>
+    <text x="350" y="310" class="uc-label" text-anchor="middle">Browse Catalog</text>
+
+    <ellipse cx="350" cy="360" rx="85" ry="22" class="uc"/>
+    <text x="350" y="365" class="uc-label" text-anchor="middle">Filter Catalog</text>
+
+    <ellipse cx="350" cy="415" rx="85" ry="22" class="uc"/>
+    <text x="350" y="420" class="uc-label" text-anchor="middle">Search Products</text>
+
+    <ellipse cx="650" cy="140" rx="95" ry="22" class="uc"/>
+    <text x="650" y="145" class="uc-label" text-anchor="middle">View Product Details</text>
+
+    <ellipse cx="650" cy="195" rx="95" ry="22" class="uc"/>
+    <text x="650" y="200" class="uc-label" text-anchor="middle">Manage Favorites</text>
+
+    <ellipse cx="650" cy="250" rx="95" ry="22" class="uc"/>
+    <text x="650" y="255" class="uc-label" text-anchor="middle">Manage Cart</text>
+
+    <ellipse cx="650" cy="305" rx="95" ry="22" class="uc"/>
+    <text x="650" y="310" class="uc-label" text-anchor="middle">Checkout</text>
+
+    <ellipse cx="650" cy="360" rx="95" ry="22" class="uc"/>
+    <text x="650" y="365" class="uc-label" text-anchor="middle">View Order Confirmation</text>
+
+    <ellipse cx="650" cy="415" rx="95" ry="22" class="uc"/>
+    <text x="650" y="420" class="uc-label" text-anchor="middle">Edit Profile</text>
+  </g>
+
+  <!-- Customer associations -->
+  <g>
+    <line x1="100" y1="350" x2="265" y2="140" class="line"/>
+    <line x1="100" y1="350" x2="265" y2="195" class="line"/>
+    <line x1="100" y1="350" x2="265" y2="250" class="line"/>
+    <line x1="100" y1="350" x2="265" y2="305" class="line"/>
+    <line x1="100" y1="350" x2="265" y2="360" class="line"/>
+    <line x1="100" y1="350" x2="265" y2="415" class="line"/>
+    <line x1="100" y1="350" x2="555" y2="140" class="line"/>
+    <line x1="100" y1="350" x2="555" y2="195" class="line"/>
+    <line x1="100" y1="350" x2="555" y2="250" class="line"/>
+    <line x1="100" y1="350" x2="555" y2="305" class="line"/>
+    <line x1="100" y1="350" x2="555" y2="360" class="line"/>
+    <line x1="100" y1="350" x2="555" y2="415" class="line"/>
+  </g>
+
+  <!-- Firebase associations -->
+  <g>
+    <line x1="900" y1="350" x2="745" y2="140" class="line"/>
+    <line x1="900" y1="350" x2="745" y2="195" class="line"/>
+    <line x1="900" y1="350" x2="745" y2="250" class="line"/>
+    <line x1="900" y1="350" x2="745" y2="305" class="line"/>
+    <line x1="900" y1="350" x2="745" y2="360" class="line"/>
+    <line x1="900" y1="350" x2="745" y2="415" class="line"/>
+    <line x1="900" y1="350" x2="435" y2="140" class="line"/>
+    <line x1="900" y1="350" x2="435" y2="195" class="line"/>
+    <line x1="900" y1="350" x2="435" y2="305" class="line"/>
+    <line x1="900" y1="350" x2="435" y2="360" class="line"/>
+    <line x1="900" y1="350" x2="435" y2="415" class="line"/>
+  </g>
+
+  <!-- Legend / note -->
+  <g transform="translate(260,520)">
+    <rect width="480" height="140" rx="8" fill="#F8FAFC" stroke="#CBD5E1"/>
+    <text x="240" y="26" class="actor-label" text-anchor="middle">Notes</text>
+    <text x="20" y="55" class="uc-label">• Register, Sign In, Sign Out, Edit Profile interact with Firebase Authentication.</text>
+    <text x="20" y="78" class="uc-label">• Browse, Filter, Search, View Details, Favorites, Cart, Checkout and</text>
+    <text x="20" y="96" class="uc-label">  Order Confirmation interact with Cloud Firestore.</text>
+    <text x="20" y="120" class="uc-label">• Checkout «includes» View Order Confirmation; Filter «extends» Browse Catalog.</text>
+  </g>
+</svg>

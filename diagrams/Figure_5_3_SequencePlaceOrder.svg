@@ -1,0 +1,135 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 820" font-family="Arial, sans-serif">
+  <style>
+    .title { font-size: 18px; font-weight: bold; fill: #1F3864; }
+    .lifeline-label { font-size: 12px; font-weight: 700; fill: #ffffff; }
+    .stereotype { font-size: 10px; font-style: italic; fill: #ffffff; }
+    .msg { font-size: 11px; fill: #1F2937; }
+    .ret { font-size: 11px; fill: #1F2937; font-style: italic; }
+    .head { fill: #1F3864; stroke: #1F3864; }
+    .lifeline { stroke: #888; stroke-dasharray: 5,4; stroke-width: 1; }
+    .activation { fill: #DCE6F1; stroke: #1F3864; }
+    .arrow { stroke: #1F3864; stroke-width: 1.4; fill: none; }
+    .return { stroke: #1F3864; stroke-width: 1.2; fill: none; stroke-dasharray: 5,3; }
+    .note { fill: #FFF8C5; stroke: #D4A72C; }
+    .note-text { font-size: 11px; fill: #1F2937; }
+  </style>
+  <defs>
+    <marker id="solidArrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1F3864"/>
+    </marker>
+    <marker id="openArrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="10" markerHeight="10" orient="auto">
+      <path d="M0,0 L10,5 L0,10" fill="none" stroke="#1F3864" stroke-width="1.2"/>
+    </marker>
+  </defs>
+
+  <text x="550" y="30" class="title" text-anchor="middle">Figure 5.3 – Order Placement Sequence Diagram</text>
+
+  <!-- Lifeline heads -->
+  <g>
+    <rect x="40"  y="60" width="120" height="42" rx="4" class="head"/>
+    <text x="100" y="78" class="stereotype" text-anchor="middle">«actor»</text>
+    <text x="100" y="94" class="lifeline-label" text-anchor="middle">Customer</text>
+
+    <rect x="200" y="60" width="160" height="42" rx="4" class="head"/>
+    <text x="280" y="78" class="stereotype" text-anchor="middle">«screen»</text>
+    <text x="280" y="94" class="lifeline-label" text-anchor="middle">CheckoutScreen</text>
+
+    <rect x="400" y="60" width="160" height="42" rx="4" class="head"/>
+    <text x="480" y="78" class="stereotype" text-anchor="middle">«service»</text>
+    <text x="480" y="94" class="lifeline-label" text-anchor="middle">CartService</text>
+
+    <rect x="600" y="60" width="160" height="42" rx="4" class="head"/>
+    <text x="680" y="78" class="stereotype" text-anchor="middle">«baas»</text>
+    <text x="680" y="94" class="lifeline-label" text-anchor="middle">Cloud Firestore</text>
+
+    <rect x="800" y="60" width="200" height="42" rx="4" class="head"/>
+    <text x="900" y="78" class="stereotype" text-anchor="middle">«screen»</text>
+    <text x="900" y="94" class="lifeline-label" text-anchor="middle">ConfirmationScreen</text>
+  </g>
+
+  <!-- Lifelines -->
+  <line x1="100" y1="102" x2="100" y2="770" class="lifeline"/>
+  <line x1="280" y1="102" x2="280" y2="770" class="lifeline"/>
+  <line x1="480" y1="102" x2="480" y2="770" class="lifeline"/>
+  <line x1="680" y1="102" x2="680" y2="770" class="lifeline"/>
+  <line x1="900" y1="102" x2="900" y2="770" class="lifeline"/>
+
+  <!-- Activations -->
+  <rect x="274" y="120" width="12" height="600" class="activation"/>
+  <rect x="474" y="190" width="12" height="320" class="activation"/>
+  <rect x="674" y="220" width="12" height="40"  class="activation"/>
+  <rect x="674" y="330" width="12" height="40"  class="activation"/>
+  <rect x="674" y="430" width="12" height="40"  class="activation"/>
+  <rect x="894" y="600" width="12" height="120" class="activation"/>
+  <rect x="674" y="630" width="12" height="40"  class="activation"/>
+
+  <!-- Messages -->
+  <!-- 1. tap Place Order -->
+  <line x1="100" y1="140" x2="274" y2="140" class="arrow" marker-end="url(#solidArrow)"/>
+  <text x="105" y="135" class="msg">1: tap "Place Order"</text>
+
+  <!-- 2. validate form -->
+  <path d="M 286,170 C 320,165 320,190 286,185" class="arrow" marker-end="url(#solidArrow)"/>
+  <text x="298" y="178" class="msg">2: validateForm()</text>
+
+  <!-- 3. read cart -->
+  <line x1="286" y1="220" x2="674" y2="220" class="arrow" marker-end="url(#solidArrow)"/>
+  <text x="370" y="215" class="msg">3: read carts where userId = u</text>
+  <line x1="674" y1="252" x2="286" y2="252" class="return" marker-end="url(#openArrow)"/>
+  <text x="380" y="247" class="ret">cart items snapshot</text>
+
+  <!-- 4. compute totals -->
+  <path d="M 286,290 C 320,285 320,310 286,305" class="arrow" marker-end="url(#solidArrow)"/>
+  <text x="298" y="298" class="msg">4: computeSubtotal(), shipping, total</text>
+
+  <!-- 5. create order -->
+  <line x1="286" y1="340" x2="674" y2="340" class="arrow" marker-end="url(#solidArrow)"/>
+  <text x="370" y="335" class="msg">5: orders.add(orderData)</text>
+  <line x1="674" y1="362" x2="286" y2="362" class="return" marker-end="url(#openArrow)"/>
+  <text x="430" y="357" class="ret">orderRef (orderId)</text>
+
+  <!-- 6. update orderId field -->
+  <line x1="286" y1="395" x2="674" y2="395" class="arrow" marker-end="url(#solidArrow)"/>
+  <text x="370" y="390" class="msg">6: orderRef.update({orderId})</text>
+
+  <!-- 7. batch delete cart -->
+  <line x1="286" y1="440" x2="674" y2="440" class="arrow" marker-end="url(#solidArrow)"/>
+  <text x="340" y="435" class="msg">7: batch delete cart documents → commit()</text>
+  <line x1="674" y1="465" x2="286" y2="465" class="return" marker-end="url(#openArrow)"/>
+  <text x="420" y="460" class="ret">commit OK</text>
+
+  <!-- 8. navigate to confirmation -->
+  <line x1="286" y1="610" x2="894" y2="610" class="arrow" marker-end="url(#solidArrow)"/>
+  <text x="450" y="605" class="msg">8: pushReplacementNamed(confirmation, {orderId})</text>
+
+  <!-- 9. load order details -->
+  <line x1="906" y1="645" x2="674" y2="645" class="arrow" marker-end="url(#solidArrow)"/>
+  <text x="700" y="640" class="msg">9: orders.doc(orderId).get()</text>
+  <line x1="674" y1="668" x2="906" y2="668" class="return" marker-end="url(#openArrow)"/>
+  <text x="700" y="663" class="ret">order document</text>
+
+  <!-- 10. render -->
+  <path d="M 906,700 C 940,695 940,715 906,712" class="arrow" marker-end="url(#solidArrow)"/>
+  <text x="918" y="706" class="msg">10: render success state</text>
+
+  <!-- 11. visible feedback -->
+  <line x1="894" y1="750" x2="100" y2="750" class="return" marker-end="url(#openArrow)"/>
+  <text x="380" y="745" class="ret">confirmation visible to Customer</text>
+
+  <!-- Notes -->
+  <g transform="translate(40,500)">
+    <rect width="220" height="80" rx="6" class="note"/>
+    <text x="12" y="22" class="note-text">Validation rejects blank name,</text>
+    <text x="12" y="38" class="note-text">phone, address, or city before</text>
+    <text x="12" y="54" class="note-text">any Firestore call. Errors are</text>
+    <text x="12" y="70" class="note-text">surfaced through a SnackBar.</text>
+  </g>
+
+  <g transform="translate(800,500)">
+    <rect width="270" height="80" rx="6" class="note"/>
+    <text x="12" y="22" class="note-text">Order document fields: userId,</text>
+    <text x="12" y="38" class="note-text">items[], subtotal, shipping, total,</text>
+    <text x="12" y="54" class="note-text">status = "Pending", paymentMethod</text>
+    <text x="12" y="70" class="note-text">= "Cash on Delivery", timestamps.</text>
+  </g>
+</svg>

@@ -31,7 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final CartService _cartService = CartService();
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  Set<String> _favoriteIds = {};
+  final ValueNotifier<Set<String>> _favoriteIds = ValueNotifier({});
   StreamSubscription? _favoritesSubscription;
 
   @override
@@ -45,11 +45,9 @@ class _HomeScreenState extends State<HomeScreen> {
           .snapshots()
           .listen((snapshot) {
         if (mounted) {
-          setState(() {
-            _favoriteIds = snapshot.docs
-                .map((d) => (d.data()['productId'] ?? '') as String)
-                .toSet();
-          });
+          _favoriteIds.value = snapshot.docs
+              .map((d) => (d.data()['productId'] ?? '') as String)
+              .toSet();
         }
       });
     }
@@ -58,6 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void dispose() {
     _favoritesSubscription?.cancel();
+    _favoriteIds.dispose();
     super.dispose();
   }
 
@@ -532,32 +531,35 @@ class _HomeScreenState extends State<HomeScreen> {
                                     Positioned(
                                       top: 8,
                                       right: 8,
-                                      child: GestureDetector(
-                                        onTap: () => _addToFavorites({
-                                          'id': products[index].id,
-                                          'title': productName,
-                                          'price': productPrice,
-                                          'image': productImage,
-                                          'category': productCategory,
-                                        }),
-                                        child: Container(
-                                          padding: const EdgeInsets.all(6),
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            shape: BoxShape.circle,
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: Colors.black.withValues(alpha: 0.1),
-                                                blurRadius: 4,
-                                              ),
-                                            ],
-                                          ),
-                                          child: Icon(
-                                            _favoriteIds.contains(products[index].id)
-                                                ? Icons.favorite
-                                                : Icons.favorite_border,
-                                            size: 16,
-                                            color: AppColors.accentPink,
+                                      child: ValueListenableBuilder<Set<String>>(
+                                        valueListenable: _favoriteIds,
+                                        builder: (context, favIds, _) => GestureDetector(
+                                          onTap: () => _addToFavorites({
+                                            'id': products[index].id,
+                                            'title': productName,
+                                            'price': productPrice,
+                                            'image': productImage,
+                                            'category': productCategory,
+                                          }),
+                                          child: Container(
+                                            padding: const EdgeInsets.all(6),
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              shape: BoxShape.circle,
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Colors.black.withValues(alpha: 0.1),
+                                                  blurRadius: 4,
+                                                ),
+                                              ],
+                                            ),
+                                            child: Icon(
+                                              favIds.contains(products[index].id)
+                                                  ? Icons.favorite
+                                                  : Icons.favorite_border,
+                                              size: 16,
+                                              color: AppColors.accentPink,
+                                            ),
                                           ),
                                         ),
                                       ),

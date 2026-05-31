@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../../core/constants/app_colors.dart';
 import '../../../core/routes/app_routes.dart';
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
 
-  static const _blue = Color(0xFF2B3CF3);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.background,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 28),
@@ -34,7 +34,7 @@ class WelcomeScreen extends StatelessWidget {
                 style: GoogleFonts.poppins(
                   fontSize: 36,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black,
+                  color: AppColors.textPrimary,
                 ),
               ),
               const SizedBox(height: 10),
@@ -44,7 +44,7 @@ class WelcomeScreen extends StatelessWidget {
                 'Find everything you need \nwithin a few clicks',
                 style: GoogleFonts.poppins(
                   fontSize: 15,
-                  color: Colors.black45,
+                  color: AppColors.textSecondary,
                   height: 1.6,
                 ),
                 textAlign: TextAlign.center,
@@ -59,7 +59,7 @@ class WelcomeScreen extends StatelessWidget {
                   onPressed: () =>
                       Navigator.pushNamed(context, AppRoutes.createAccount),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: _blue,
+                    backgroundColor: AppColors.primary,
                     foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(vertical: 18),
                     shape: RoundedRectangleBorder(
@@ -89,7 +89,7 @@ class WelcomeScreen extends StatelessWidget {
                       'I already have an account',
                       style: GoogleFonts.poppins(
                         fontSize: 14,
-                        color: Colors.black54,
+                        color: AppColors.textSecondary,
                       ),
                     ),
                     const SizedBox(width: 10),
@@ -97,7 +97,7 @@ class WelcomeScreen extends StatelessWidget {
                       width: 36,
                       height: 36,
                       decoration: const BoxDecoration(
-                        color: _blue,
+                        color: AppColors.primary,
                         shape: BoxShape.circle,
                       ),
                       child: const Icon(
