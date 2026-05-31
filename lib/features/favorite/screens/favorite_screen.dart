@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:ecommerce_app/core/routes/app_routes.dart';
 import 'package:ecommerce_app/core/constants/app_colors.dart';
 import 'package:ecommerce_app/core/widgets/app_bottom_nav_bar.dart';
+import 'package:ecommerce_app/features/product/screens/product_details_screen.dart';
 
 class FavoriteScreen extends StatefulWidget {
   const FavoriteScreen({super.key});
@@ -126,6 +127,10 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
             return Center(child: Text('Error: ${snapshot.error}'));
           }
 
+          if (!snapshot.hasData) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
           final favoriteItems = snapshot.data!.docs;
 
           if (favoriteItems.isEmpty) {
@@ -221,9 +226,23 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                   topRight: Radius.circular(16),
                 ),
                 child: GestureDetector(
-                  onTap: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Product details for $name coming soon!')),
+                  onTap: () async {
+                    final doc = await _firestore.collection('products').doc(productId).get();
+                    if (!mounted) return;
+                    final data = doc.exists ? doc.data()! : <String, dynamic>{};
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => ProductDetailsScreen(product: {
+                          'id': productId,
+                          'title': name,
+                          'price': price,
+                          'image': imageUrl,
+                          'category': data['category'] ?? '',
+                          'rating': data['rating'] ?? 4.5,
+                          'description': data['description'] ?? '',
+                        }),
+                      ),
                     );
                   },
                   child: Image.network(
