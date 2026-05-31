@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:intl_phone_field/countries.dart' as phone_countries;
+import '../../../core/constants/app_colors.dart';
 import '../../../core/services/auth_service.dart';
 
 class CreateAccountScreen extends StatefulWidget {
@@ -26,8 +27,6 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   String _completePhone = '';
   String _selectedCountry = '';
 
-  static const _blue = Color(0xFF2B3CF3);
-  static const _lightBlue = Color(0xFFE8EAFF);
 
   @override
   void dispose() {
@@ -152,7 +151,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.background,
       body: Stack(
         children: [
           // ── Decorative blobs ──────────────────────────────────────────
@@ -164,7 +163,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
               width: 340,
               height: 340,
               decoration: BoxDecoration(
-                color: _lightBlue,
+                color: AppColors.primaryPale,
                 borderRadius: BorderRadius.circular(100),
               ),
             ),
@@ -177,7 +176,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
               width: 300,
               height: 300,
               decoration: const BoxDecoration(
-                color: _blue,
+                color: AppColors.primary,
                 shape: BoxShape.circle,
               ),
             ),
@@ -201,7 +200,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                         fontSize: 38,
                         fontWeight: FontWeight.bold,
                         height: 1.1,
-                        color: Colors.black,
+                        color: AppColors.textPrimary,
                       ),
                     ),
                     const SizedBox(height: 32),
@@ -212,9 +211,9 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                       keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
                         hintText: 'Email',
-                        hintStyle: GoogleFonts.poppins(color: Colors.grey),
+                        hintStyle: GoogleFonts.poppins(color: AppColors.textLight),
                         filled: true,
-                        fillColor: const Color(0xFFF1F1F1),
+                        fillColor: AppColors.inputFill,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(30),
                           borderSide: BorderSide.none,
@@ -242,9 +241,9 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                       obscureText: _obscurePassword,
                       decoration: InputDecoration(
                         hintText: 'Password',
-                        hintStyle: GoogleFonts.poppins(color: Colors.grey),
+                        hintStyle: GoogleFonts.poppins(color: AppColors.textLight),
                         filled: true,
-                        fillColor: const Color(0xFFF1F1F1),
+                        fillColor: AppColors.inputFill,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(30),
                           borderSide: BorderSide.none,
@@ -258,7 +257,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                             _obscurePassword
                                 ? Icons.visibility_off_outlined
                                 : Icons.visibility_outlined,
-                            color: Colors.grey,
+                            color: AppColors.textLight,
                           ),
                           onPressed: () => setState(
                             () => _obscurePassword = !_obscurePassword,
@@ -283,9 +282,9 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                       initialCountryCode: 'EG',
                       decoration: InputDecoration(
                         hintText: 'Your number',
-                        hintStyle: GoogleFonts.poppins(color: Colors.grey),
+                        hintStyle: GoogleFonts.poppins(color: AppColors.textLight),
                         filled: true,
-                        fillColor: const Color(0xFFF1F1F1),
+                        fillColor: AppColors.inputFill,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(30),
                           borderSide: BorderSide.none,
@@ -326,9 +325,9 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                       controller: _usernameController,
                       decoration: InputDecoration(
                         hintText: 'Username (optional)',
-                        hintStyle: GoogleFonts.poppins(color: Colors.grey),
+                        hintStyle: GoogleFonts.poppins(color: AppColors.textLight),
                         filled: true,
-                        fillColor: const Color(0xFFF1F1F1),
+                        fillColor: AppColors.inputFill,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(30),
                           borderSide: BorderSide.none,
@@ -346,9 +345,9 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                       controller: _addressController,
                       decoration: InputDecoration(
                         hintText: 'Address (optional)',
-                        hintStyle: GoogleFonts.poppins(color: Colors.grey),
+                        hintStyle: GoogleFonts.poppins(color: AppColors.textLight),
                         filled: true,
-                        fillColor: const Color(0xFFF1F1F1),
+                        fillColor: AppColors.inputFill,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(30),
                           borderSide: BorderSide.none,
@@ -367,7 +366,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                       child: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFF1F1F1),
+                          color: AppColors.inputFill,
                           borderRadius: BorderRadius.circular(30),
                         ),
                         child: Row(
@@ -375,12 +374,12 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                             Text(
                               _selectedCountry.isEmpty ? 'Country (optional)' : _selectedCountry,
                               style: GoogleFonts.poppins(
-                                color: _selectedCountry.isEmpty ? Colors.grey : Colors.black87,
+                                color: _selectedCountry.isEmpty ? AppColors.textLight : AppColors.textPrimary,
                                 fontSize: 16,
                               ),
                             ),
                             const Spacer(),
-                            const Icon(Icons.arrow_drop_down, color: Colors.grey),
+                            const Icon(Icons.arrow_drop_down, color: AppColors.textLight),
                           ],
                         ),
                       ),
@@ -393,7 +392,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                       child: ElevatedButton(
                         onPressed: _isLoading ? null : _createAccount,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: _blue,
+                          backgroundColor: AppColors.primary,
                           foregroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(vertical: 18),
                           shape: const StadiumBorder(),
@@ -429,7 +428,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                             'OR',
                             style: GoogleFonts.poppins(
                               fontSize: 12,
-                              color: Colors.grey,
+                              color: AppColors.textLight,
                             ),
                           ),
                         ),
@@ -446,7 +445,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                         style: OutlinedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 16),
                           shape: const StadiumBorder(),
-                          side: BorderSide(color: Colors.grey.shade300),
+                          side: const BorderSide(color: AppColors.border),
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -473,7 +472,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                               style: GoogleFonts.poppins(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w500,
-                                color: Colors.black87,
+                                color: AppColors.textPrimary,
                               ),
                             ),
                           ],
@@ -490,7 +489,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                           'I have an account, Sign In',
                           style: GoogleFonts.poppins(
                             fontSize: 14,
-                            color: Colors.black54,
+                            color: AppColors.textSecondary,
                           ),
                         ),
                       ),
