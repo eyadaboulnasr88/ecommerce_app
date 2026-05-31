@@ -404,24 +404,6 @@ class SettingsMenu extends StatelessWidget {
               'country': userLocation,
             }),
           ),
-          const Divider(height: 1, indent: 56, color: AppColors.border),
-          _buildSimpleMenuItem(
-            context,
-            Icons.delete_outline,
-            'Clear cache',
-            () => ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Cache cleared!')),
-            ),
-          ),
-          const Divider(height: 1, indent: 56, color: AppColors.border),
-          _buildSimpleMenuItem(
-            context,
-            Icons.history_outlined,
-            'Clear history',
-            () => ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('History cleared!')),
-            ),
-          ),
           // ==================== HELP & SUPPORT ====================
           const Divider(height: 1, indent: 56, color: AppColors.border),
           _buildSimpleMenuItem(
