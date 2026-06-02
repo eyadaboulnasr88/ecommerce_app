@@ -26,6 +26,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   bool _obscurePassword = true;
   String _completePhone = '';
   String _selectedCountry = '';
+  String? _phoneError;
 
 
   @override
@@ -88,13 +89,20 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(e.message ?? 'Google sign-in failed')),
       );
-    } catch (_) {
-      // user cancelled picker — do nothing
+    } catch (e) {
+      if (e.toString().contains('cancelled')) return;
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Google sign-in failed. Please try again.')),
+      );
     }
   }
 
   Future<void> _createAccount() async {
-    if (!_formKey.currentState!.validate()) return;
+    setState(() {
+      _phoneError = _completePhone.isEmpty ? 'Phone number is required' : null;
+    });
+    if (!_formKey.currentState!.validate() || _phoneError != null) return;
     final email = _emailController.text.trim();
     final password = _passwordController.text;
     final phone = _phoneController.text.trim();
@@ -285,6 +293,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                         hintStyle: GoogleFonts.poppins(color: AppColors.textLight),
                         filled: true,
                         fillColor: AppColors.inputFill,
+                        errorText: _phoneError,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(30),
                           borderSide: BorderSide.none,
@@ -310,13 +319,10 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                           vertical: 16,
                         ),
                       ),
-                      onChanged: (phone) => _completePhone = phone.completeNumber,
-                      validator: (phone) {
-                        if (phone == null || phone.number.isEmpty) {
-                          return 'Phone number is required';
-                        }
-                        return null;
-                      },
+                      onChanged: (phone) => setState(() {
+                        _completePhone = phone.completeNumber;
+                        if (_phoneError != null) _phoneError = null;
+                      }),
                     ),
                     const SizedBox(height: 14),
 

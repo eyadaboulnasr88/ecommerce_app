@@ -72,8 +72,12 @@ class _SignInScreenState extends State<SignInScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(e.message ?? 'Google sign-in failed')),
       );
-    } catch (_) {
-      // user cancelled picker — do nothing
+    } catch (e) {
+      if (e.toString().contains('cancelled')) return;
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Google sign-in failed. Please try again.')),
+      );
     }
   }
 
